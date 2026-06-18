@@ -54,7 +54,9 @@ router.get('/check-imei', async (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ? AND status = ?').get(keyRecord.user_id, 'active');
     if (!user) return res.status(403).json({ error: 'Account not active' });
 
-    if (user.credits < 1) return res.status(403).json({ error: 'Insufficient credits' });
+    const costSetting = db.prepare("SELECT value FROM settings WHERE key = 'per_check_cost'").get();
+    const perCheckCost = costSetting ? parseInt(costSetting.value) || 1 : 1;
+    if (user.credits < perCheckCost && user.role !== 'admin') return res.status(403).json({ error: 'Insufficient credits' });
 
     const { imei } = req.query;
     if (!imei || !/^\d{15}$/.test(imei)) {
@@ -75,9 +77,11 @@ router.get('/check-imei', async (req, res) => {
     if (keyRecord.max_requests > 0) {
       db.prepare('UPDATE api_keys SET requests_used = requests_used + 1 WHERE id = ?').run(keyRecord.id);
     }
-    db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(user.id);
-    db.prepare('INSERT INTO credit_logs (user_id, amount, type, note) VALUES (?, ?, ?, ?)')
-      .run(user.id, -1, 'deduct', `API IMEI check: ${imei}`);
+    if (user.role !== 'admin') {
+      db.prepare('UPDATE users SET credits = credits - ? WHERE id = ?').run(perCheckCost, user.id);
+      db.prepare('INSERT INTO credit_logs (user_id, amount, type, note) VALUES (?, ?, ?, ?)')
+        .run(user.id, -perCheckCost, 'deduct', `API IMEI check: ${imei}`);
+    }
     db.prepare('INSERT INTO imei_logs (user_id, api_key_id, imei, response_status, ip) VALUES (?, ?, ?, ?, ?)')
       .run(user.id, keyRecord.id, imei, response.data.code || 0, req.ip);
 
@@ -141,7 +145,9 @@ router.get('/check-rcsm', async (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ? AND status = ?').get(keyRecord.user_id, 'active');
     if (!user) return res.status(403).json({ error: 'Account not active' });
 
-    if (user.credits < 1) return res.status(403).json({ error: 'Insufficient credits' });
+    const costSetting = db.prepare("SELECT value FROM settings WHERE key = 'per_check_cost'").get();
+    const perCheckCost = costSetting ? parseInt(costSetting.value) || 1 : 1;
+    if (user.credits < perCheckCost && user.role !== 'admin') return res.status(403).json({ error: 'Insufficient credits' });
 
     const { imei } = req.query;
     if (!imei || !/^\d{15}$/.test(imei)) {
@@ -176,9 +182,11 @@ router.get('/check-rcsm', async (req, res) => {
     if (keyRecord.max_requests > 0) {
       db.prepare('UPDATE api_keys SET requests_used = requests_used + 1 WHERE id = ?').run(keyRecord.id);
     }
-    db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(user.id);
-    db.prepare('INSERT INTO credit_logs (user_id, amount, type, note) VALUES (?, ?, ?, ?)')
-      .run(user.id, -1, 'deduct', `RCSM API IMEI check: ${imei}`);
+    if (user.role !== 'admin') {
+      db.prepare('UPDATE users SET credits = credits - ? WHERE id = ?').run(perCheckCost, user.id);
+      db.prepare('INSERT INTO credit_logs (user_id, amount, type, note) VALUES (?, ?, ?, ?)')
+        .run(user.id, -perCheckCost, 'deduct', `RCSM API IMEI check: ${imei}`);
+    }
     db.prepare('INSERT INTO imei_logs (user_id, api_key_id, imei, response_status, ip) VALUES (?, ?, ?, ?, ?)')
       .run(user.id, keyRecord.id, imei, response.data.ErrorCode === 0 ? 200 : 0, req.ip);
 

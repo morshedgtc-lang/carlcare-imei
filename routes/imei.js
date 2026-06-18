@@ -145,6 +145,9 @@ router.get('/keys', requireAuth, requireHmac, (req, res) => {
 });
 
 router.post('/keys', requireAuth, requireHmac, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Only admins can generate API keys. Contact your administrator.' });
+  }
   const { label } = req.body;
   const raw = crypto.randomBytes(24).toString('hex');
   const key = 'sk_live_' + raw;
@@ -154,6 +157,9 @@ router.post('/keys', requireAuth, requireHmac, (req, res) => {
 });
 
 router.delete('/keys/:id', requireAuth, requireHmac, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Only admins can manage API keys' });
+  }
   const keyRec = db.prepare('SELECT * FROM api_keys WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
   if (!keyRec) return res.status(404).json({ error: 'Key not found' });
   db.prepare('UPDATE api_keys SET active = 0 WHERE id = ?').run(req.params.id);
