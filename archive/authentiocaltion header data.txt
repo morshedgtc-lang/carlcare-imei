@@ -1,0 +1,68 @@
+Request URL
+https://service.carlcare.com/CarlcareClient/user/authentication
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+5.42.206.146:8081
+Referrer Policy
+strict-origin-when-cross-origin
+access-control-allow-credentials
+true
+access-control-allow-methods
+GET,POST,PUT,OPTIONS,DELETE,PATCH
+access-control-allow-origin
+https://www.carlcare.com
+access-control-max-age
+3600
+content-encoding
+gzip
+content-type
+application/json
+date
+Mon, 25 May 2026 13:04:57 GMT
+response_code
+200
+vary
+Origin
+vary
+Access-Control-Request-Method
+vary
+Access-Control-Request-Headers
+:authority
+service.carlcare.com
+:method
+GET
+:path
+/CarlcareClient/user/authentication
+:scheme
+https
+accept
+application/json, text/plain, */*
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-US,en;q=0.9,ar;q=0.8
+authorization
+eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyIjoiSHJxS1Voa2ZzYm5HSEI0bWtHb0lJdGxNUkI0TnhhOUhuUGl4MytzNnNHZWh4djhzMkFLSHBkLzJVWFE5NlRsekF2eFhYSUlvSzlIS1lQNjVFMjdkM2RpeiszQ3FkdXpnOXJyZVpONTF0MlpKTStvdzVQeFYzU1E4Nk9zSnozV2pBYWdJb05GZm5YclFwZ05YRWRxRHdCNHQ5M2Y2SUFwa2Y1SVlYbCt6NEJUcVpPZmNYdzVFZ2xDQnV4YlpFbE40Zm1JdkNibzRIaGZCcTFMSFJNUE14d2NtQnFmTHliTHNWMmxPV3k3dWVsY2JJK01hOWI4c0xLZkgxNnhNWGdDUUJ0VHFWcmpEdTBhSjV6YlpBVWx4NXdWTXNlQkJUSHB4MWdJK0pjS2dtbi92V1ZTS3BMVzZaM0JXdHFiSkhzMDBXcEMxL2NrbFdVMzQ0OGZTZFhBbFo5RWU3S0txdWtGbXNwb3grZjVscGp3b1E2K08rL0k4ck11MFhHbW12dytXa3lkd3dWanQxNTBkRmRWaWREeXVFUT09IiwiYXBwSWQiOiJjYXJsY2FyZWFwcCIsInNjb3BlIjoiU2NvcGUuQUxMIiwiaXNzIjoieG4iLCJpYXQiOjE3Nzk3MTQyOTMsInN1YiI6ImFjY2Vzc1Rva2VuIiwiZXhwIjoxNzc5ODg3MDkzfQ.Q-YPX2DCFyzH03STrTGhl_tfjO-xitkQvFQQLe4y9yk6iKfHpM0OYsIJRBQ8cKlRvfZuu7F9jJrqlxbjyFmXxxg1QJvlqSHbQBoUDd1Tt7AQE0pCmDon3CkQfVlX1OXmNnFCtWFxOUiEg_SZcjVNiwkBoOHZZOl130X69FCqGcDnqm2grbTvg6wUyXMNeC-hbG0CCs1wsNQq3lvSrKLAQxmS8kqiBpIZs_oXbhaZEO4rnybH6vS18QXn0igI9NgaV5dbs3tR4LViQiRFhTbHPjMmmMKI9hwPqKUOg6NUswcCwPcrelDIfhWwed2ReizaucSn8tS6j6b_cq-D5ciCcg
+origin
+https://www.carlcare.com
+priority
+u=1, i
+referer
+https://www.carlcare.com/
+sec-ch-ua
+"Chromium";v="148", "Brave";v="148", "Not/A)Brand";v="99"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+same-site
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36

@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Carlcare IMEI</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='2' width='20' height='28' rx='3' fill='none' stroke='%233b82f6' stroke-width='2'/%3E%3Cline x1='12' y1='24' x2='20' y2='24' stroke='%233b82f6' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  /* BACKGROUND - edit gradient colors to change theme */
+  --bg-gradient:linear-gradient(135deg,#0f172a,#1e1b4b);
+  /* GLASS EFFECT */
+  --glass-bg:rgba(30,41,59,0.35);
+  --glass-blur:30px;
+  --glass-border:rgba(255,255,255,0.12);
+  /* ACCENT */
+  --accent:#3b82f6;
+  --accent2:#2563eb;
+  /* TEXT */
+  --text:#e2e8f0;
+  --text2:#94a3b8;
+  /* STATUS */
+  --green:#4ade80;
+  --red:#f87171;
+  --yellow:#fbbf24;
+  /* NON-GLASS SURFACES (inputs, tables, buttons) */
+  --bg:#0f172a;
+  --border:#334155;
+  --bg3:#334155;
+  /* LAYOUT */
+  --sidebar-w:220px
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg-gradient);background-attachment:fixed;color:var(--text);min-height:100vh}
+
+/* GLASS - single class used everywhere */
+.glassmorphic{
+  background:var(--glass-bg);
+  backdrop-filter:blur(var(--glass-blur));
+  -webkit-backdrop-filter:blur(var(--glass-blur));
+  border:1px solid var(--glass-border);
+  box-shadow:0 8px 20px 0 rgba(0,0,0,0.1),inset 0 1px 2px rgba(255,255,255,0.12),inset 0 -1px 2px rgba(0,0,0,0.1);
+  position:relative;
+}
+
+/* LOGIN */
+.login-view{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+.login-box{padding:2.5rem;border-radius:12px;width:400px;max-width:100%}
+.login-box h1{text-align:center;margin-bottom:.5rem;font-size:1.5rem}
+.login-box .sub{text-align:center;color:var(--text2);font-size:.85rem;margin-bottom:1.5rem}
+.login-box .tab-links{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.login-box .tab-links button{flex:1;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text2);cursor:pointer;font-size:.85rem}
+.login-box .tab-links button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;margin-bottom:.35rem;font-size:.8rem;color:var(--text2)}
+.form-group input{width:100%;padding:.7rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px}
+.form-group input:focus{outline:none;border-color:var(--accent)}
+.btn-primary{width:100%;padding:.7rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.9rem}
+.btn-primary:hover{background:var(--accent2)}
+.btn-primary:disabled{opacity:.5;cursor:default}
+.msg{color:var(--green);font-size:.8rem;margin-top:.4rem;display:none}
+.err{color:var(--red);font-size:.8rem;margin-top:.4rem;display:none}
+
+/* APP */
+.app-view{display:none}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);border-right:1px solid var(--glass-border);display:flex;flex-direction:column;overflow-y:auto;z-index:100;transition:transform .3s ease}
+.sidebar .brand{padding:1.2rem 1rem;border-bottom:1px solid var(--border);font-weight:700;font-size:1rem;white-space:nowrap}
+.sidebar .brand small{display:block;font-weight:400;font-size:.7rem;color:var(--text2);margin-top:2px}
+.sidebar .section{font-size:.7rem;color:var(--text2);padding:.8rem 1rem .3rem;text-transform:uppercase;letter-spacing:1px}
+.sidebar a{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;color:var(--text2);text-decoration:none;font-size:.85rem;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.sidebar a:hover,.sidebar a:active{background:var(--bg);color:var(--text)}
+.sidebar a.active{background:var(--accent);color:#fff;font-weight:600}
+.sidebar .spacer{flex:1}
+.sidebar .credits-bar{padding:.8rem 1rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--text2)}
+.sidebar .credits-bar strong{color:var(--green);display:block;font-size:1.1rem;margin-top:2px}
+.sidebar .close-btn{display:none}
+
+/* Sidebar overlay on mobile */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+.sidebar-overlay.show{display:block}
+
+.main-content{margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
+.topbar{padding:.75rem 1rem;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;min-height:52px}
+.topbar .hamburger{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;padding:.2rem .4rem;line-height:1}
+.topbar h3{font-size:1rem;font-weight:600;flex:1;margin-left:.5rem}
+.topbar .user-badge{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--text2);white-space:nowrap}
+.topbar .user-badge .role{background:var(--accent);color:#fff;padding:.15rem .45rem;border-radius:4px;font-size:.7rem;text-transform:uppercase}
+.content{padding:1.5rem;flex:1}
+
+/* 70/30 */
+.page{display:none}
+.page.active{display:flex;gap:1.5rem}
+.page-left{flex:7;min-width:0}
+.page-right{flex:3;min-width:0}
+
+.card{border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+.card h4{font-size:.95rem;margin-bottom:.75rem;color:var(--text)}
+.card .label{font-size:.75rem;color:var(--text2);margin-bottom:.25rem}
+.card .value{font-size:1.1rem;font-weight:600}
+
+.stats-row{display:flex;gap:.75rem;margin-bottom:1rem}
+.stat-box{border-radius:10px;padding:1rem;flex:1;text-align:center}
+.stat-box .num{font-size:1.6rem;font-weight:700}
+.stat-box .lbl{font-size:.75rem;color:var(--text2);margin-top:2px}
+
+/* Tables */
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table-wrap table{min-width:400px}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th,td{padding:.5rem .6rem;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--text2);font-weight:600;font-size:.75rem;white-space:nowrap}
+td{color:var(--text)}
+.s-active{color:var(--green)}
+.s-inactive{color:var(--red)}
+.s-pending{color:var(--yellow)}
+.s-processing{color:var(--accent)}
+
+.input-row{display:flex;gap:.5rem}
+.input-row input{flex:1;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px}
+.input-row input:focus{outline:none;border-color:var(--accent)}
+.input-row button{padding:.6rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85rem;white-space:nowrap}
+.input-row button:hover{background:var(--accent2)}
+
+.btn{display:inline-block;padding:.35rem .65rem;border:none;border-radius:5px;cursor:pointer;font-size:.78rem;font-weight:600;margin:1px;-webkit-tap-highlight-color:transparent}
+.btn-sm{padding:.25rem .5rem;font-size:.72rem}
+.btn-green{background:#22c55e;color:#fff}
+.btn-red{background:#ef4444;color:#fff}
+.btn-blue{background:var(--accent);color:#fff}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{background:var(--bg3)}
+
+.copy-btn{background:var(--bg3);color:var(--text2);border:none;border-radius:4px;padding:.15rem .45rem;font-size:.7rem;cursor:pointer}
+.copy-btn:hover{background:var(--border);color:var(--text)}
+.cost-badge{background:var(--bg3);color:var(--text2);padding:.15rem .4rem;border-radius:4px;font-size:.72rem}
+table code{font-size:.75rem;background:var(--bg);padding:.15rem .4rem;border-radius:4px}
+
+.result-box{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));border:1px solid var(--glass-border);border-radius:8px;padding:1rem;margin-top:.5rem;display:none}
+.result-box.show{display:block}
+.result-box pre{font-family:monospace;font-size:.82rem;line-height:1.6;color:var(--text2);white-space:pre-wrap}
+.result-box .device-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)}
+.result-box .device-row:last-child{border:none}
+.result-box .device-label{color:var(--text2);font-size:.8rem}
+.result-box .device-value{font-weight:600;font-size:.85rem}
+
+.pagination{display:flex;justify-content:center;align-items:center;gap:.5rem;margin-top:1rem}
+.pagination button{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:.3rem .7rem;border-radius:5px;cursor:pointer;font-size:.8rem;min-height:32px}
+.pagination button:hover{background:var(--accent);color:#fff}
+.pagination button:disabled{opacity:.4;cursor:default}
+
+.tabs-row{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.8rem}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.credit-inp{width:65px;padding:.3rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-size:.78rem;text-align:center;margin:0 2px}
+
+/* MODERN MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;justify-content:center;align-items:center;animation:fadeIn .2s ease}
+.modal-overlay.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(30px) scale(.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.modal{background:rgba(15,23,42,.85);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.75rem;width:650px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);animation:slideUp .25s ease}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.modal-header h4{margin:0;font-size:1.05rem;font-weight:700}
+.modal-close{background:var(--bg3);border:none;color:var(--text2);cursor:pointer;font-size:1.1rem;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.modal-close:hover{background:var(--red);color:#fff}
+.modal-body{font-size:.85rem;line-height:1.7}
+.modal-body .lbl{font-size:.75rem;color:var(--text2);margin-bottom:.15rem}
+.modal .table-wrap{margin-bottom:1rem}
+.modal table{font-size:.8rem}
+
+/* TOAST */
+.toast-container{position:fixed;top:1rem;right:1rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+.toast{pointer-events:auto;padding:.85rem 1.25rem;border-radius:10px;font-size:.85rem;font-weight:500;max-width:360px;box-shadow:0 10px 30px rgba(0,0,0,.3);animation:toastIn .3s ease;display:flex;align-items:center;gap:.6rem;border:1px solid rgba(255,255,255,.1)}
+.toast-success{background:rgba(34,197,94,.2);backdrop-filter:blur(20px);color:var(--green);border-color:rgba(34,197,94,.3)}
+.toast-error{background:rgba(239,68,68,.2);backdrop-filter:blur(20px);color:var(--red);border-color:rgba(239,68,68,.3)}
+.toast-info{background:rgba(59,130,246,.2);backdrop-filter:blur(20px);color:var(--accent);border-color:rgba(59,130,246,.3)}
+.toast-out{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
+
+.modal::-webkit-scrollbar{width:5px}
+.modal::-webkit-scrollbar-track{background:transparent}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+@media(max-width:768px){
+  :root{--sidebar-w:0px}
+  .sidebar{transform:translateX(-100%);width:260px}
+  .sidebar.glassmorphic{background:var(--glass-bg)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar .close-btn{display:block;position:absolute;top:.8rem;right:.8rem;background:0;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer;z-index:5;padding:.2rem}
+  .main-content{margin-left:0}
+  .topbar .hamburger{display:block}
+  .page.active{flex-direction:column;gap:1rem}
+  .page-left,.page-right{flex:none;width:100%}
+  .stats-row{flex-direction:column;gap:.5rem}
+  .stat-box{padding:.75rem}
+  .stat-box .num{font-size:1.3rem}
+  .content{padding:1rem}
+  .card{padding:1rem}
+  .login-box{padding:1.5rem}
+  .topbar h3{font-size:.9rem;margin-left:.3rem}
+  .topbar .user-badge .role{display:none}
+  .table-wrap table{min-width:350px}
+  .modal{width:95vw;padding:1.25rem;max-height:90vh}
+  .toast{max-width:calc(100vw - 2rem)}
+}
+</style>
+</head>
+<body>
+
+<!-- ====== LOGIN / REGISTER VIEW ====== -->
+<div class="login-view" id="loginView">
+  <div class="login-box glassmorphic">
+    <h1>Carlcare IMEI</h1>
+    <div class="sub">IMEI lookup & device information platform</div>
+    <div class="tab-links">
+      <button class="active" onclick="switchLoginTab('login',this)">Sign In</button>
+      <button onclick="switchLoginTab('register',this)">Register</button>
+    </div>
+    <div id="loginForm">
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password"></div>
+      <div class="err" id="loginErr"></div>
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Your name"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Min 4 characters"></div>
+      <div class="err" id="regErr"></div>
+      <div class="msg" id="regMsg"></div>
+      <button class="btn-primary" onclick="doRegister()">Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== APP VIEW ====== -->
+<div class="app-view" id="appView">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <nav class="sidebar glassmorphic" id="sidebar">
+    <button class="close-btn" onclick="closeSidebar()">&times;</button>
+    <div class="brand">Carlcare IMEI <small>v1.0</small></div>
+    <div class="section">Client</div>
+    <a href="#home" class="active" onclick="navigate('home')"><span>&#9751;</span> <span>Home</span></a>
+    <a href="#check" onclick="navigate('check')"><span>&#9747;</span> <span>IMEI Check</span></a>
+    <a href="#history" onclick="navigate('history')"><span>&#9776;</span> <span>History</span></a>
+    <a href="#orders" onclick="navigate('orders')"><span>&#9993;</span> <span>Orders</span></a>
+    <div class="section">Account</div>
+    <a href="#profile" onclick="navigate('profile')"><span>&#9787;</span> <span>Profile</span></a>
+    <div id="adminLinkContainer"></div>
+    <div class="spacer"></div>
+    <div class="credits-bar">Balance <strong id="sideCredits">0</strong></div>
+    <a href="#" onclick="logout()"><span>&#8617;</span> <span>Logout</span></a>
+  </nav>
+
+  <div class="main-content">
+    <div class="topbar glassmorphic">
+      <button class="hamburger" onclick="toggleSidebar()">&#9776;</button>
+      <h3 id="pageTitle">Dashboard</h3>
+      <div class="user-badge">
+        <span id="topUserName">User</span>
+        <span class="role" id="topUserRole">client</span>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- HOME -->
+      <div class="page active" id="page-home">
+        <div class="page-left">
+          <div class="stats-row">
+            <div class="stat-box glassmorphic"><div class="num" id="statBalance" style="color:var(--green)">0</div><div class="lbl">Credit Balance</div></div>
+            <div class="stat-box glassmorphic"><div class="num" id="statChecks" style="color:var(--accent)">0</div><div class="lbl">Total Checks</div></div>
+            <div class="stat-box glassmorphic"><div class="num" id="statUsed" style="color:var(--yellow)">0</div><div class="lbl">Credits Used</div></div>
+          </div>
+          <div class="card glassmorphic">
+            <h4>Recent Checks</h4>
+            <div class="table-wrap"><table><thead><tr><th>IMEI</th><th>Result</th><th>Date</th></tr></thead><tbody id="homeChecksTable"></tbody></table></div>
+          </div>
+        </div>
+        <div class="page-right">
+          <div class="card glassmorphic">
+            <h4>Quick IMEI Check</h4>
+            <div class="form-group"><label>Enter 15-digit IMEI</label><input type="text" id="homeImei" maxlength="15" placeholder="350417779879008" inputmode="numeric"></div>
+            <div class="form-group"><label>Check Source</label><select id="homeCheckSource" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px"><option value="carlcare">Tecno / Infinix / itel (Carlcare)</option><option value="rcsm">Realme (RCSM)</option></select></div>
+            <button class="btn-primary" onclick="quickCheck()">Check IMEI</button>
+            <div class="err" id="homeImeiErr"></div>
+            <div class="result-box glassmorphic" id="homeResult">
+              <div class="device-row"><span class="device-label">Model</span><span class="device-value" id="hrModel"></span></div>
+              <div class="device-row"><span class="device-label">Brand</span><span class="device-value" id="hrBrand"></span></div>
+              <div class="device-row"><span class="device-label">Status</span><span class="device-value" id="hrStatus"></span></div>
+              <div class="device-row"><span class="device-label">Warranty</span><span class="device-value" id="hrWarranty"></span></div>
+              <div class="device-row"><span class="device-label">Country</span><span class="device-value" id="hrCountry"></span></div>
+              <div class="device-row"><span class="device-label">IMEI</span><span class="device-value" id="hrImei"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK -->
+      <div class="page" id="page-check">
+        <div class="page-left">
+          <div class="card glassmorphic">
+            <h4>Device Information</h4>
+            <div class="result-box show glassmorphic" id="checkResult">
+              <div id="checkResultContent"><em style="color:var(--text2)">Enter an IMEI to see device details</em></div>
+            </div>
+          </div>
+        </div>
+        <div class="page-right">
+          <div class="card glassmorphic">
+            <h4>Check IMEI</h4>
+            <div class="form-group"><label>Enter 15-digit IMEI</label><input type="text" id="checkImei" maxlength="15" placeholder="350417779879008" inputmode="numeric"></div>
+            <div class="form-group"><label>Check Source</label><select id="checkSource" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px"><option value="carlcare">Tecno / Infinix / itel (Carlcare)</option><option value="rcsm">Realme (RCSM)</option></select></div>
+            <button class="btn-primary" onclick="doCheck()">Check IMEI</button>
+            <div class="err" id="checkErr"></div>
+          </div>
+          <div class="card glassmorphic">
+            <h4>Format</h4>
+            <p style="font-size:.78rem;color:var(--text2);line-height:1.6">IMEI must be exactly 15 digits.<br><code style="background:var(--bg);padding:.2rem .4rem;border-radius:4px">350417779879008</code></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="page" id="page-history">
+        <div class="page-left">
+          <div class="card glassmorphic">
+            <h4>Check History <span id="histTotal" style="font-weight:400;color:var(--text2);font-size:.8rem"></span></h4>
+            <div class="table-wrap"><table><thead><tr><th>IMEI</th><th>Result</th><th>Cost</th><th>Date</th></tr></thead><tbody id="histTable"></tbody></table></div>
+            <div class="pagination" id="histPagination"></div>
+          </div>
+        </div>
+        <div class="page-right">
+          <div class="card glassmorphic">
+            <h4>Summary</h4>
+            <div style="font-size:.85rem;line-height:2">
+              <span class="lbl">Total Checks</span><br><strong id="histTotalChecks">0</strong><br>
+              <span class="lbl">Credits Used</span><br><strong id="histCreditsUsed" style="color:var(--yellow)">0</strong><br>
+              <span class="lbl">Credits Remaining</span><br><strong id="histCreditsLeft" style="color:var(--green)">0</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="page" id="page-orders">
+        <div class="page-left">
+          <div id="orderListView">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+              <h4 style="font-size:.95rem">My Orders</h4>
+              <button class="btn btn-blue" onclick="showNewOrderForm()">+ New Order</button>
+            </div>
+            <div class="table-wrap"><table><thead><tr><th>#</th><th>Service</th><th>Status</th><th>Reply</th><th>Date</th></tr></thead><tbody id="ordersTable"></tbody></table></div>
+          </div>
+          <div id="newOrderView" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+              <h4 style="font-size:.95rem">New Order</h4>
+              <button class="btn btn-outline" onclick="showOrderList()">&#8592; Back</button>
+            </div>
+            <div class="card glassmorphic" id="orderServiceSelect">
+              <h4>Select Service</h4>
+              <div id="orderServiceList"></div>
+            </div>
+            <div class="card glassmorphic" id="orderFormCard" style="display:none">
+              <h4 id="orderFormTitle"></h4>
+              <div id="orderFormFields"></div>
+              <div class="err" id="orderSubmitErr"></div>
+              <button class="btn-primary" onclick="submitOrder()" style="margin-top:.75rem">Submit Order</button>
+            </div>
+          </div>
+          <div id="orderDetailView" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+              <h4 style="font-size:.95rem" id="orderDetailTitle">Order #</h4>
+              <button class="btn btn-outline" onclick="showOrderList()">&#8592; Back</button>
+            </div>
+            <div class="card glassmorphic" id="orderDetailContent"></div>
+          </div>
+        </div>
+        <div class="page-right">
+          <div class="card glassmorphic" id="orderStatusCard">
+            <h4>Status Guide</h4>
+            <div style="font-size:.8rem;line-height:2">
+              <span class="s-pending">&#9679; Pending</span> — Waiting for admin<br>
+              <span style="color:var(--accent)">&#9679; Processing</span> — Admin is working<br>
+              <span class="s-active">&#9679; Completed</span> — Done<br>
+              <span class="s-inactive">&#9679; Rejected</span> — Declined
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="page" id="page-profile">
+        <div class="page-left">
+          <div class="card glassmorphic">
+            <h4>Account Information</h4>
+            <div style="line-height:2;font-size:.9rem">
+              <span class="lbl">Name</span><br><strong id="profName"></strong><br>
+              <span class="lbl">Email</span><br><strong id="profEmail"></strong><br>
+              <span class="lbl">Role</span><br><strong id="profRole"></strong><br>
+              <span class="lbl">Status</span><br><strong id="profStatus"></strong><br>
+              <span class="lbl">Credit Balance</span><br><strong id="profCredits" style="color:var(--green);font-size:1.2rem"></strong>
+            </div>
+          </div>
+        </div>
+        <div class="page-right">
+          <div class="card glassmorphic">
+            <h4>Change Password</h4>
+            <div class="form-group"><label>Current Password</label><input type="password" id="oldPass" placeholder="Current password" autocomplete="current-password"></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="newPass" placeholder="New password (min 4 chars)" autocomplete="new-password"></div>
+            <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPass" placeholder="Confirm new password" autocomplete="new-password"></div>
+            <button class="btn-primary" onclick="changePass()">Update Password</button>
+            <div class="err" id="passErr"></div>
+            <div class="msg" id="passMsg"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-admin"></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== FIELDS MODAL ===== -->
+<div class="modal-overlay" id="fieldsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h4>Manage Fields for: <span id="svcFieldsName"></span></h4>
+      <button class="modal-close" onclick="closeFieldsModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="table-wrap"><table><thead><tr><th>Label</th><th>Type</th><th>Required</th><th></th></tr></thead><tbody id="svcFieldsTable"></tbody></table></div>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap;align-items:end">
+        <div class="form-group" style="flex:2;min-width:120px;margin-bottom:0"><label>New Field Label</label><input type="text" id="newFieldLabel" placeholder="e.g. IMEI Number"></div>
+        <div class="form-group" style="flex:1;min-width:100px;margin-bottom:0"><label>Type</label><select id="newFieldType" style="padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"><option value="text">Text</option><option value="textarea">Textarea</option><option value="file">File/Image</option></select></div>
+        <div class="form-group" style="flex:1;min-width:80px;margin-bottom:0"><label>Required</label><select id="newFieldRequired" style="padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"><option value="1">Yes</option><option value="0">No</option></select></div>
+        <button class="btn btn-blue" onclick="adminAddField()" style="padding:.6rem 1rem;margin-bottom:1px">Add Field</button>
+      </div>
+      <button class="btn btn-green" onclick="adminSaveFields()" style="margin-top:.75rem">Save All Fields</button>
+      <div class="err" id="svcFieldErr"></div>
+      <div class="msg" id="svcFieldMsg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN ORDER DETAIL MODAL ===== -->
+<div class="modal-overlay" id="adminOrderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h4 id="adminOrderModalTitle">Order Details</h4>
+      <button class="modal-close" onclick="closeAdminOrderModal()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="adminOrderModalBody"></div>
+  </div>
+</div>
+
+<!-- ===== USER HISTORY MODAL ===== -->
+<div class="modal-overlay" id="userHistModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h4>User History</h4>
+      <button class="modal-close" onclick="closeUserHist()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:1rem;margin-bottom:.75rem;font-size:.82rem;flex-wrap:wrap" id="userHistSummary"></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>IMEI</th><th>Result</th><th>Date</th></tr></thead><tbody id="userHistTable"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+let user = null;
+let token = localStorage.getItem('token');
+let sessionKey = null;
+let histPage = 1;
+
+async function sha256(msg) {
+  const enc = new TextEncoder().encode(msg);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function showToast(message, type) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + (type || 'info');
+  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+  t.innerHTML = '<span style="font-size:1.1rem;font-weight:700;line-height:1">' + icon + '</span> <span>' + message + '</span>';
+  c.appendChild(t);
+  setTimeout(() => { t.classList.add('toast-out'); setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+async function api(url, opts = {}) {
+  opts.headers = { ...opts.headers, 'Content-Type': 'application/json' };
+  if (sessionKey) {
+    const ts = Date.now();
+    const method = opts.method || 'GET';
+    const body = opts.body || '';
+    const path = url.indexOf('?') > -1 ? url.substring(0, url.indexOf('?')) : url;
+    const sign = await sha256(sessionKey + method + path + body + ts);
+    opts.headers['X-Request-Sign'] = sign;
+    opts.headers['X-Timestamp'] = ts;
+  }
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  try {
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    if (res.status === 401 && sessionKey) {
+      sessionKey = null;
+      logout();
+      return { ok: false, status: 401, data: { error: 'Session expired. Please login again.' } };
+    }
+    return { ok: res.ok, status: res.status, data };
+  } catch(e) {
+    return { ok: false, status: 0, data: { error: 'Connection error' } };
+  }
+}
+
+function switchLoginTab(tab, el) {
+  document.querySelectorAll('.tab-links button').forEach(b => b.classList.remove('active'));
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  el.classList.add('active');
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  const r = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+  if (!r.ok) { err.textContent = r.data.error || 'Login failed'; err.style.display='block'; return; }
+  token = r.data.token;
+  sessionKey = r.data.session_key;
+  user = r.data.user;
+  localStorage.setItem('token', token);
+  enterApp();
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  const password = document.getElementById('regPassword').value;
+  const err = document.getElementById('regErr');
+  const msg = document.getElementById('regMsg');
+  err.style.display = 'none'; msg.style.display = 'none';
+  const r = await api('/api/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }) });
+  if (!r.ok) { err.textContent = r.data.error; err.style.display='block'; return; }
+  msg.textContent = r.data.message; msg.style.display = 'block';
+}
+
+function enterApp() {
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('appView').style.display = 'block';
+  loadApp();
+}
+
+async function logout() {
+  await api('/api/auth/logout', { method: 'POST' });
+  localStorage.removeItem('token');
+  token = null; user = null; sessionKey = null;
+  document.getElementById('appView').style.display = 'none';
+  document.getElementById('loginView').style.display = 'flex';
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+
+function navigate(page) {
+  if (page === 'admin' && (!user || user.role !== 'admin')) page = 'home';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const link = document.querySelector('.sidebar a[href="#' + page + '"]');
+  if (link) link.classList.add('active');
+  const titles = { home:'Dashboard', check:'IMEI Check', history:'Check History', orders:'Orders', profile:'Profile', admin:'Admin Panel' };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+  window.location.hash = page;
+  closeSidebar();
+  loadSection(page);
+}
+
+function loadSection(page) {
+  switch(page) {
+    case 'home': loadHome(); break;
+    case 'history': loadHist(); break;
+    case 'orders': loadOrders(); break;
+    case 'profile': loadProfile(); break;
+    case 'admin': loadAdmin(); break;
+  }
+}
+
+async function loadApp() {
+  const r = await api('/api/auth/me');
+  if (!r.ok) { logout(); return; }
+  user = r.data.user || r.data;
+  if (r.data.session_key) sessionKey = r.data.session_key;
+  document.getElementById('topUserName').textContent = user.name;
+  document.getElementById('topUserRole').textContent = user.role;
+  document.getElementById('sideCredits').textContent = user.credits;
+  if (user.role === 'admin') injectAdminUI();
+  const page = window.location.hash.replace('#','') || 'home';
+  navigate(page);
+}
+
+function injectAdminUI() {
+  document.getElementById('adminLinkContainer').innerHTML = '<a href="#admin" onclick="navigate(\'admin\')"><span>&#9775;</span> <span>Admin Panel</span></a>';
+  document.getElementById('page-admin').innerHTML = `
+    <div class="page-left">
+      <div class="tabs-row" style="flex-wrap:wrap">
+        <button class="tab-btn active" onclick="switchAdminTab('users',this)">Users</button>
+        <button class="tab-btn" onclick="switchAdminTab('apiKeys',this)">API Keys</button>
+        <button class="tab-btn" onclick="switchAdminTab('clients',this)">Clients</button>
+        <button class="tab-btn" onclick="switchAdminTab('settings',this)">Settings</button>
+        <button class="tab-btn" onclick="switchAdminTab('services',this)">Services</button>
+        <button class="tab-btn" onclick="switchAdminTab('orders',this)">Orders</button>
+        <button class="tab-btn" onclick="switchAdminTab('prices',this)">Prices</button>
+        <button class="tab-btn" onclick="switchAdminTab('currencies',this)">Currencies</button>
+        <button class="tab-btn" onclick="switchAdminTab('seed',this)">Seed</button>
+        <button class="tab-btn" onclick="switchAdminTab('imeiLogs',this)">IMEI Logs</button>
+        <button class="tab-btn" onclick="switchAdminTab('creditLogs',this)">Credit Logs</button>
+        <button class="tab-btn" onclick="switchAdminTab('rcsmToken',this)">RCSM Token</button>
+      </div>
+      <!-- Users -->
+      <div class="tab-panel active" id="apanel-users">
+        <div class="card glassmorphic">
+          <h4>Manage Users</h4>
+          <div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Credits</th><th>Actions</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div>
+        </div>
+      </div>
+      <!-- API Keys -->
+      <div class="tab-panel" id="apanel-apiKeys">
+        <div class="card glassmorphic">
+          <h4>Manage API Keys</h4>
+          <div class="table-wrap"><table><thead><tr><th>ID</th><th>User</th><th>Label</th><th>Status</th><th>Expires</th><th>Limits</th><th>Created</th></tr></thead><tbody id="adminKeysTable"></tbody></table></div>
+        </div>
+        <div class="card glassmorphic">
+          <h4>Create API Key <span style="font-weight:400;color:var(--text2);font-size:.8rem">(for a user)</span></h4>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:end">
+            <div class="form-group" style="flex:2;min-width:120px"><label>User ID</label><input type="number" id="admKeyUserId" placeholder="User ID"></div>
+            <div class="form-group" style="flex:2;min-width:120px"><label>Label</label><input type="text" id="admKeyLabel" placeholder="e.g. My App"></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Expires (days)</label><input type="number" id="admKeyExp" placeholder="0 = never"></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Max/day</label><input type="number" id="admKeyMax" placeholder="0 = unlimited"></div>
+            <div class="form-group" style="flex:2;min-width:140px"><label>Allowed IPs (comma)</label><input type="text" id="admKeyIps" placeholder="1.2.3.4,5.6.7.8"></div>
+            <button class="btn btn-blue" onclick="adminCreateKey()" style="padding:.6rem 1rem;margin-bottom:1px">Create Key</button>
+          </div>
+          <div class="err" id="admKeyErr"></div>
+          <div class="msg" id="admKeyMsg"></div>
+        </div>
+      </div>
+      <!-- Clients -->
+      <div class="tab-panel" id="apanel-clients">
+        <div class="card glassmorphic">
+          <h4>Client Management</h4>
+          <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+            <input type="text" id="clientSearch" placeholder="Search clients by name or email..." style="flex:1;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)">
+            <button class="btn btn-blue" onclick="loadAdminClients()">Search</button>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Credits</th><th>Created</th></tr></thead><tbody id="adminClientsTable"></tbody></table></div>
+        </div>
+      </div>
+      <!-- Settings -->
+      <div class="tab-panel" id="apanel-settings">
+        <div class="card glassmorphic">
+          <h4>Service Settings</h4>
+          <div class="form-group"><label>Service Enabled</label><select id="admServiceEnabled" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px"><option value="1">Enabled</option><option value="0">Disabled (maintenance)</option></select></div>
+          <div class="form-group"><label>Per-Check Cost (credits)</label><input type="number" id="admPerCheckCost" min="1" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px"></div>
+          <div class="form-group"><label>Maintenance Message</label><textarea id="admMaintMsg" rows="2" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px"></textarea></div>
+          <button class="btn-primary" onclick="adminSaveSettings()">Save Settings</button>
+          <div class="err" id="admSvcErr"></div>
+          <div class="msg" id="admSvcMsg"></div>
+        </div>
+      </div>
+      <!-- Services -->
+      <div class="tab-panel" id="apanel-services">
+        <div class="card glassmorphic">
+          <h4>Manage Services</h4>
+          <div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Cost</th><th>Active</th><th>Fields</th><th>Actions</th></tr></thead><tbody id="adminServicesTable"></tbody></table></div>
+        </div>
+        <div class="card glassmorphic">
+          <h4 id="svcFormTitle">Add New Service</h4>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:end">
+            <div class="form-group" style="flex:2;min-width:150px"><label>Name</label><input type="text" id="admSvcName" placeholder="e.g. Phone Unlock"></div>
+            <div class="form-group" style="flex:3;min-width:200px"><label>Description</label><input type="text" id="admSvcDesc" placeholder="Brief description"></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Active</label><select id="admSvcActive" style="padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"><option value="1">Yes</option><option value="0">No</option></select></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Cost (credits)</label><input type="number" id="admSvcCost" value="0" min="0" style="width:100%;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"></div>
+            <button class="btn btn-blue" onclick="adminSaveService()" style="padding:.6rem 1rem;margin-bottom:1px">Save Service</button>
+          </div>
+          <div class="err" id="admSvcErr"></div>
+          <div class="msg" id="admSvcMsg"></div>
+        </div>
+      </div>
+      <!-- Orders -->
+      <div class="tab-panel" id="apanel-orders">
+        <div class="card glassmorphic">
+          <h4>All Orders</h4>
+          <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap;align-items:center">
+            <select id="admOrderStatusFilter" style="padding:.4rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-size:.8rem">
+              <option value="">All Status</option><option value="pending">Pending</option><option value="processing">Processing</option><option value="completed">Completed</option><option value="rejected">Rejected</option>
+            </select>
+            <input type="number" id="admOrderUserFilter" placeholder="User ID" style="width:80px;padding:.4rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-size:.8rem">
+            <input type="number" id="admOrderServiceFilter" placeholder="Service ID" style="width:90px;padding:.4rem;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-size:.8rem">
+            <button class="btn btn-blue" onclick="loadAdminOrders()">Filter</button>
+            <button class="btn btn-outline" onclick="document.getElementById('admOrderStatusFilter').value='';document.getElementById('admOrderUserFilter').value='';document.getElementById('admOrderServiceFilter').value='';loadAdminOrders()">Clear</button>
+            <span style="flex:1"></span>
+            <button class="btn btn-green" id="bulkReplyBtn" onclick="adminBulkReply()" style="display:none">Reply Selected</button>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="admOrderSelectAll" onchange="toggleAllOrders()"></th><th>#</th><th>User</th><th>Service</th><th>Status</th><th>Unlock</th><th>Reply</th><th>Date</th><th>Actions</th></tr></thead><tbody id="adminOrdersTable"></tbody></table></div>
+          <div class="pagination" id="adminOrdersPagination"></div>
+          <div id="bulkReplyInput" style="display:none;margin-top:.75rem">
+            <div class="form-group"><label>Bulk Reply Note</label><textarea id="bulkReplyNote" rows="2" style="width:100%;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px"></textarea></div>
+            <button class="btn btn-green" onclick="adminBulkReplySend()">Send to Selected</button>
+            <button class="btn btn-outline" onclick="document.getElementById('bulkReplyInput').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <!-- Prices -->
+      <div class="tab-panel" id="apanel-prices">
+        <div class="card glassmorphic">
+          <h4>Price Management</h4>
+          <div class="table-wrap"><table><thead><tr><th>Name</th><th>Cost</th><th>Currency</th><th>Actions</th></tr></thead><tbody id="adminPricesTable"></tbody></table></div>
+        </div>
+        <div class="card glassmorphic">
+          <h4>Add / Edit Price</h4>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:end">
+            <div class="form-group" style="flex:2;min-width:120px"><label>Name</label><input type="text" id="admPriceName" placeholder="e.g. IMEI Check"></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Cost (credits)</label><input type="number" id="admPriceCost" min="1" value="1"></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Currency</label><select id="admPriceCurrency" style="padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"><option>USD</option></select></div>
+            <button class="btn btn-blue" onclick="adminSavePrice()" style="padding:.6rem 1rem;margin-bottom:1px">Save</button>
+          </div>
+          <div class="err" id="admPriceErr"></div>
+          <div class="msg" id="admPriceMsg"></div>
+        </div>
+      </div>
+      <!-- Currencies -->
+      <div class="tab-panel" id="apanel-currencies">
+        <div class="card glassmorphic">
+          <h4>Currency Management</h4>
+          <div class="table-wrap"><table><thead><tr><th>Code</th><th>Name</th><th>Symbol</th><th>Rate (vs USD)</th><th>Actions</th></tr></thead><tbody id="adminCurrenciesTable"></tbody></table></div>
+        </div>
+        <div class="card glassmorphic">
+          <h4>Add / Edit Currency</h4>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:end">
+            <div class="form-group" style="flex:1;min-width:80px"><label>Code</label><input type="text" id="admCurCode" placeholder="USD" maxlength="3" style="text-transform:uppercase"></div>
+            <div class="form-group" style="flex:2;min-width:120px"><label>Name</label><input type="text" id="admCurName" placeholder="US Dollar"></div>
+            <div class="form-group" style="flex:1;min-width:60px"><label>Symbol</label><input type="text" id="admCurSymbol" placeholder="$"></div>
+            <div class="form-group" style="flex:1;min-width:80px"><label>Rate</label><input type="number" id="admCurRate" step="0.01" min="0.01" value="1.0"></div>
+            <button class="btn btn-blue" onclick="adminSaveCurrency()" style="padding:.6rem 1rem;margin-bottom:1px">Save</button>
+          </div>
+          <div class="err" id="admCurErr"></div>
+          <div class="msg" id="admCurMsg"></div>
+        </div>
+      </div>
+      <!-- Seed Demo Data -->
+      <div class="tab-panel" id="apanel-seed">
+        <div class="card glassmorphic">
+          <h4>Seed Demo Data</h4>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:.75rem">Creates a demo user (demo@demo.com / demo123, 100 credits) and 5 sample services with fields. Existing demo data will be reset.</p>
+          <button class="btn btn-blue" onclick="adminSeedData()">Seed Demo Data</button>
+          <div class="err" id="admSeedErr"></div>
+          <div class="msg" id="admSeedMsg"></div>
+        </div>
+      </div>
+      <!-- IMEI Logs -->
+      <div class="tab-panel" id="apanel-imeiLogs">
+        <div class="card glassmorphic">
+          <h4>All IMEI Checks</h4>
+          <div class="table-wrap"><table><thead><tr><th>User</th><th>IMEI</th><th>Result</th><th>Date</th></tr></thead><tbody id="adminLogsTable"></tbody></table></div>
+        </div>
+      </div>
+      <!-- Credit Logs -->
+      <div class="tab-panel" id="apanel-creditLogs">
+        <div class="card glassmorphic">
+          <h4>All Credit Transactions</h4>
+          <div class="table-wrap"><table><thead><tr><th>User</th><th>Amount</th><th>Type</th><th>Note</th><th>Date</th></tr></thead><tbody id="adminCreditLogsTable"></tbody></table></div>
+        </div>
+      </div>
+      <!-- RCSM Token -->
+      <div class="tab-panel" id="apanel-rcsmToken">
+        <div class="card glassmorphic">
+          <h4>RCSM Token Status</h4>
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+            <span id="rcsmDot" style="width:12px;height:12px;border-radius:50%;background:var(--red);display:inline-block"></span>
+            <span id="rcsmStatusText" style="font-size:.9rem">Checking...</span>
+          </div>
+          <div id="rcsmDetails" style="font-size:.85rem;line-height:2;display:none">
+            <span class="lbl">Expires At</span><br><strong id="rcsmExpires"></strong><br>
+            <span class="lbl">Time Left</span><br><strong id="rcsmMinutes" style="color:var(--green)"></strong><br>
+            <span class="lbl">Saved At</span><br><strong id="rcsmSaved"></strong>
+          </div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
+            <button class="btn btn-blue" onclick="loadRcsmTokenStatus()">Refresh Status</button>
+            <button class="btn btn-green" onclick="refreshRcsmToken()">Force Refresh</button>
+          </div>
+          <div class="err" id="rcsmErr"></div>
+          <div class="msg" id="rcsmMsg"></div>
+        </div>
+        <div class="card glassmorphic">
+          <h4>Paste RCSM Token</h4>
+          <p style="font-size:.8rem;color:var(--text2);margin-bottom:.75rem">Login to <code style="background:var(--bg);padding:.15rem .4rem;border-radius:4px">rcsm-sg.realmeservice.com</code>, open F12 Console, paste this one-liner:</p>
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.5rem;font-size:.75rem;font-family:monospace;word-break:break-all;margin-bottom:.75rem;color:var(--text2)" id="rcsmSnippet">fetch(location.origin+'/api/imei/token-ping/'+JSON.parse(localStorage.PortalStorage).auth.accessToken).then(()=>fetch(location.origin+'/api/imei/rcsm-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({accessToken:JSON.parse(localStorage.PortalStorage).auth.accessToken,refreshToken:JSON.parse(localStorage.PortalStorage).auth.refreshToken,expiresIn:7200})})).then(r=>r.json()).then(d=>alert(d.ok?'Token saved!':'Error: '+JSON.stringify(d))).catch(e=>alert('Error: '+e))</div>
+          <button class="btn btn-outline" onclick="copyRcsmSnippet()" style="margin-bottom:.75rem">Copy Snippet</button>
+          <div class="form-group"><label>Or paste Bearer token manually</label><textarea id="rcsmManualToken" rows="3" style="width:100%;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.8rem;font-family:monospace" placeholder="Paste access token here..."></textarea></div>
+          <div style="display:flex;gap:.5rem;align-items:end">
+            <div class="form-group" style="flex:1;min-width:100px"><label>Expires in (sec)</label><input type="number" id="rcsmExpiresIn" value="7200" style="width:100%;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"></div>
+            <button class="btn btn-blue" onclick="saveRcsmTokenManual()" style="padding:.6rem 1rem;margin-bottom:1px">Save Token</button>
+          </div>
+          <div class="err" id="rcsmSaveErr"></div>
+          <div class="msg" id="rcsmSaveMsg"></div>
+        </div>
+      </div>
+    </div>
+    <div class="page-right">
+      <div class="card glassmorphic">
+        <h4>Create User</h4>
+        <div class="form-group"><label>Name</label><input type="text" id="adminNewName" placeholder="Full name"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="adminNewEmail" placeholder="user@email.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="adminNewPass" placeholder="Password"></div>
+        <button class="btn-primary" onclick="adminCreateUser()">Create User (Active)</button>
+        <div class="err" id="adminCreateErr"></div>
+        <div class="msg" id="adminCreateMsg"></div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadHome() {
+  const r = await api('/api/auth/me');
+  if (r.ok) {
+    document.getElementById('statBalance').textContent = r.data.credits;
+    document.getElementById('sideCredits').textContent = r.data.credits;
+  }
+  const h = await api('/api/imei/history?limit=5');
+  if (h.ok) {
+    document.getElementById('statChecks').textContent = h.data.total;
+    document.getElementById('homeChecksTable').innerHTML = h.data.logs.map(l =>
+      '<tr><td>' + l.imei + '</td><td class="' + (l.response_status===200?'s-active':'s-inactive') + '">' + (l.response_status===200?'Success':'Failed') + '</td><td>' + l.created_at + '</td></tr>'
+    ).join('');
+  }
+  const c = await api('/api/imei/credit-logs');
+  if (c.ok) {
+    const total = c.data.logs.filter(l=>l.type==='deduct').reduce((s,l)=>s+Math.abs(l.amount),0);
+    document.getElementById('statUsed').textContent = total;
+  }
+}
+
+async function quickCheck() {
+  const imei = document.getElementById('homeImei').value.replace(/\D/g,'');
+  const source = document.getElementById('homeCheckSource').value;
+  const err = document.getElementById('homeImeiErr');
+  const res = document.getElementById('homeResult');
+  err.style.display='none'; res.classList.remove('show');
+  if (imei.length !== 15) { err.textContent='IMEI must be 15 digits'; err.style.display='block'; return; }
+  const endpoint = source === 'rcsm' ? '/api/imei/check-rcsm' : '/api/imei/check-imei';
+  const r = await api(endpoint, { method:'POST', body:JSON.stringify({imei}) });
+  if (!r.ok) { err.textContent=r.data.error || 'Check failed'; err.style.display='block'; return; }
+  const d = r.data.data;
+  document.getElementById('hrModel').textContent = d.model;
+  document.getElementById('hrBrand').textContent = d.brand;
+  document.getElementById('hrStatus').textContent = d.status;
+  document.getElementById('hrWarranty').textContent = d.warranty;
+  document.getElementById('hrCountry').textContent = d.country;
+  document.getElementById('hrImei').textContent = d.imei;
+  res.classList.add('show');
+  document.getElementById('statBalance').textContent = r.data.credits_remaining;
+  document.getElementById('sideCredits').textContent = r.data.credits_remaining;
+  document.getElementById('homeImei').value = '';
+  loadHome();
+}
+
+async function doCheck() {
+  const imei = document.getElementById('checkImei').value.replace(/\D/g,'');
+  const source = document.getElementById('checkSource').value;
+  const err = document.getElementById('checkErr');
+  err.style.display='none';
+  if (imei.length !== 15) { err.textContent='IMEI must be 15 digits'; err.style.display='block'; return; }
+  const endpoint = source === 'rcsm' ? '/api/imei/check-rcsm' : '/api/imei/check-imei';
+  const r = await api(endpoint, { method:'POST', body:JSON.stringify({imei}) });
+  if (!r.ok) { err.textContent=r.data.error || 'Check failed'; err.style.display='block'; return; }
+  const d = r.data.data;
+  let html = '<div class="device-row"><span class="device-label">Model</span><span class="device-value">' + d.model + '</span></div>' +
+    '<div class="device-row"><span class="device-label">Brand</span><span class="device-value">' + d.brand + '</span></div>' +
+    '<div class="device-row"><span class="device-label">Status</span><span class="device-value">' + d.status + '</span></div>' +
+    '<div class="device-row"><span class="device-label">Warranty</span><span class="device-value">' + d.warranty + '</span></div>' +
+    '<div class="device-row"><span class="device-label">Country</span><span class="device-value">' + d.country + '</span></div>';
+  if (source === 'rcsm') {
+    html += '<div class="device-row"><span class="device-label">Color</span><span class="device-value">' + (d.color||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">RAM</span><span class="device-value">' + (d.ram||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">ROM</span><span class="device-value">' + (d.rom||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Serial Number</span><span class="device-value">' + (d.serialNumber||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">PCB Number</span><span class="device-value">' + (d.pcbNumber||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Battery SN</span><span class="device-value">' + (d.batterySN||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Adaptor SN</span><span class="device-value">' + (d.adaptorSN||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Chip SN</span><span class="device-value">' + (d.chipSN||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Software Version</span><span class="device-value">' + (d.softwareVersion||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Product Version</span><span class="device-value">' + (d.productVersion||'N/A') + '</span></div>' +
+      '<div class="device-row"><span class="device-label">Manufacturing Date</span><span class="device-value">' + (d.activeTime||'N/A') + '</span></div>';
+  } else {
+    html += '<div class="device-row"><span class="device-label">IMEI</span><span class="device-value">' + d.imei + '</span></div>';
+  }
+  html += '<div class="device-row"><span class="device-label">Credits Left</span><span class="device-value" style="color:var(--green)">' + r.data.credits_remaining + '</span></div>';
+  document.getElementById('checkResultContent').innerHTML = html;
+  document.getElementById('sideCredits').textContent = r.data.credits_remaining;
+  document.getElementById('checkImei').value = '';
+}
+
+async function loadHist(p) {
+  if (p !== undefined) histPage = p;
+  const r = await api('/api/imei/history?page=' + histPage + '&limit=10');
+  if (!r.ok) return;
+  const d = r.data;
+  document.getElementById('histTotal').textContent = '(' + d.total + ' total)';
+  document.getElementById('histTotalChecks').textContent = d.total;
+  document.getElementById('histTable').innerHTML = d.logs.map(l =>
+    '<tr><td>' + l.imei + '</td><td class="' + (l.response_status===200?'s-active':'s-inactive') + '">' + (l.response_status===200?'Success':'Failed') + '</td><td><span class="cost-badge">-1</span></td><td>' + l.created_at + '</td></tr>'
+  ).join('');
+  const histCostR = await api('/api/admin/settings');
+  if (histCostR.ok) {
+    const costVal = parseInt(histCostR.data.per_check_cost) || 1;
+    document.querySelectorAll('#histTable .cost-badge').forEach(el => el.textContent = '-' + costVal);
+  }
+  const totalPages = Math.ceil(d.total / 10);
+  let pg = '<button onclick="loadHist(' + (histPage-1) + ')"' + (histPage<=1?' disabled':'') + '>&#9664;</button>';
+  pg += '<span style="font-size:.8rem;color:var(--text2);padding:0 .5rem;align-self:center">' + histPage + '/' + totalPages + '</span>';
+  pg += '<button onclick="loadHist(' + (histPage+1) + ')"' + (histPage>=totalPages?' disabled':'') + '>&#9654;</button>';
+  document.getElementById('histPagination').innerHTML = pg;
+  const cred = await api('/api/imei/credit-logs');
+  if (cred.ok) {
+    const used = cred.data.logs.filter(l=>l.type==='deduct').reduce((s,l)=>s+Math.abs(l.amount),0);
+    document.getElementById('histCreditsUsed').textContent = used;
+  }
+  const me = await api('/api/auth/me');
+  if (me.ok) document.getElementById('histCreditsLeft').textContent = me.data.credits;
+}
+
+async function loadKeys() {
+  const r = await api('/api/imei/keys');
+  if (!r.ok || !r.data.keys) return;
+  document.getElementById('keysTable').innerHTML = r.data.keys.map(k =>
+    '<tr><td>' + k.label + '</td><td><code>' + k.key.substring(0,12) + '...</code> <button class="copy-btn" onclick="navigator.clipboard.writeText(\'' + k.key + '\')">Copy</button></td>' +
+    '<td>' + (k.active ? '<span class="s-active">Active</span>' : '<span class="s-inactive">Revoked</span>') + '</td>' +
+    '<td>' + k.created_at + '</td>' +
+    '<td>' + (k.active ? '<button class="btn btn-sm btn-red" onclick="revKey(' + k.id + ')">Revoke</button>' : '') + '</td></tr>'
+  ).join('');
+}
+
+async function genKey() {
+  const label = document.getElementById('keyLabel').value || 'Default';
+  const err = document.getElementById('keyErr');
+  err.style.display = 'none';
+  const r = await api('/api/imei/keys', { method:'POST', body:JSON.stringify({label}) });
+  if (r.data.error) { err.textContent=r.data.error; err.style.display='block'; return; }
+  document.getElementById('keyLabel').value = '';
+  loadKeys();
+}
+async function revKey(id) {
+  await api('/api/imei/keys/' + id, { method:'DELETE' });
+  loadKeys();
+}
+
+async function loadProfile() {
+  const r = await api('/api/auth/me');
+  if (!r.ok) return;
+  document.getElementById('profName').textContent = r.data.name;
+  document.getElementById('profEmail').textContent = r.data.email;
+  document.getElementById('profRole').textContent = r.data.role;
+  document.getElementById('profStatus').textContent = r.data.status;
+  document.getElementById('profCredits').textContent = r.data.credits;
+}
+
+async function changePass() {
+  const old = document.getElementById('oldPass').value;
+  const np = document.getElementById('newPass').value;
+  const cf = document.getElementById('confirmPass').value;
+  const err = document.getElementById('passErr');
+  const msg = document.getElementById('passMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!old || !np) { err.textContent='Fill all fields'; err.style.display='block'; return; }
+  if (np !== cf) { err.textContent='Passwords do not match'; err.style.display='block'; return; }
+  if (np.length < 4) { err.textContent='New password too short'; err.style.display='block'; return; }
+  const r = await api('/api/auth/change-password', { method:'POST', body:JSON.stringify({oldPassword:old, newPassword:np}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  document.getElementById('oldPass').value=''; document.getElementById('newPass').value=''; document.getElementById('confirmPass').value='';
+  msg.textContent=r.data.message; msg.style.display='block';
+}
+
+function switchAdminTab(tab, el) {
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('apanel-' + tab).classList.add('active');
+  if (tab === 'imeiLogs') loadAdminLogs();
+  if (tab === 'creditLogs') loadAdminCreditLogs();
+  if (tab === 'apiKeys') loadAdminKeys();
+  if (tab === 'clients') loadAdminClients();
+  if (tab === 'settings') loadAdminService();
+  if (tab === 'services') loadAdminServices();
+  if (tab === 'orders') loadAdminOrders();
+  if (tab === 'prices') loadAdminPrices();
+  if (tab === 'currencies') loadAdminCurrencies();
+  if (tab === 'rcsmToken') loadRcsmTokenStatus();
+}
+
+async function loadAdmin() {
+  const r = await api('/api/admin/users');
+  if (!r.ok) return;
+  document.getElementById('adminUsersTable').innerHTML = r.data.map(u =>
+    '<tr><td>' + u.id + '</td><td>' + u.name + '</td><td>' + u.email + '</td>' +
+    '<td class="s-' + u.status + '">' + u.status + '</td><td><strong>' + u.credits + '</strong></td>' +
+    '<td style="font-size:.72rem">' +
+      (u.role==='client' ?
+        (u.status==='pending' ? '<button class="btn btn-sm btn-green" onclick="adminApprove('+u.id+')">Approve</button> ' : '') +
+        (u.status==='active' ? '<button class="btn btn-sm btn-red" onclick="adminDisable('+u.id+')">Disable</button> ' : '') +
+        (u.status==='suspended' ? '<button class="btn btn-sm btn-green" onclick="adminApprove('+u.id+')">Enable</button> ' : '') +
+        '<input class="credit-inp" id="addAmt-'+u.id+'" value="10"><button class="btn btn-sm btn-blue" onclick="adminAddCredits('+u.id+')">+</button> ' +
+        '<input class="credit-inp" id="dedAmt-'+u.id+'" value="5"><button class="btn btn-sm btn-red" onclick="adminDeductCredits('+u.id+')">-</button> ' +
+        '<button class="btn btn-sm btn-outline" onclick="adminViewHist('+u.id+',\''+u.name+'\')">Hist</button>'
+        : '') +
+    '</td></tr>'
+  ).join('');
+}
+
+async function loadAdminKeys() {
+  const r = await api('/api/admin/api-keys');
+  if (!r.ok) return;
+  document.getElementById('adminKeysTable').innerHTML = r.data.keys.map(k =>
+    '<tr><td>'+k.id+'</td><td>'+k.user_name+' ('+k.user_email+')</td><td>'+k.label+'</td>' +
+    '<td class="'+(k.active?'s-active':'s-inactive')+'">'+(k.active?'Active':'Revoked')+'</td>' +
+    '<td style="font-size:.75rem">'+(k.expires_at||'Never')+'</td>' +
+    '<td style="font-size:.75rem">'+(k.max_requests>0?k.max_requests+'/day':'Unlimited')+'</td>' +
+    '<td style="font-size:.72rem">'+k.created_at+'</td></tr>'
+  ).join('');
+}
+async function adminCreateKey() {
+  const user_id = parseInt(document.getElementById('admKeyUserId').value);
+  const label = document.getElementById('admKeyLabel').value || 'Default';
+  const expires_in_days = parseInt(document.getElementById('admKeyExp').value) || 0;
+  const max_requests = parseInt(document.getElementById('admKeyMax').value) || 0;
+  const allowed_ips = document.getElementById('admKeyIps').value || null;
+  const err = document.getElementById('admKeyErr');
+  const msg = document.getElementById('admKeyMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!user_id) { err.textContent='User ID required'; err.style.display='block'; return; }
+  const r = await api('/api/admin/api-keys', { method:'POST', body:JSON.stringify({user_id,label,expires_in_days,max_requests,allowed_ips}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.innerHTML='Key created: <code style="background:var(--bg);padding:.2rem .4rem;border-radius:4px;word-break:break-all">'+r.data.key+'</code> <button class="copy-btn" onclick="navigator.clipboard.writeText(\''+r.data.key+'\')">Copy</button>';
+  msg.style.display='block';
+  document.getElementById('admKeyUserId').value=''; document.getElementById('admKeyLabel').value=''; document.getElementById('admKeyExp').value=''; document.getElementById('admKeyMax').value=''; document.getElementById('admKeyIps').value='';
+  loadAdminKeys();
+}
+async function loadAdminClients() {
+  const q = document.getElementById('clientSearch').value;
+  const r = await api('/api/admin/clients' + (q ? '?q='+encodeURIComponent(q) : ''));
+  if (!r.ok) return;
+  document.getElementById('adminClientsTable').innerHTML = r.data.users.map(u =>
+    '<tr><td>'+u.id+'</td><td>'+u.name+'</td><td>'+u.email+'</td><td class="s-'+u.status+'">'+u.status+'</td><td><strong>'+u.credits+'</strong></td><td style="font-size:.75rem">'+u.created_at+'</td></tr>'
+  ).join('');
+}
+async function loadAdminService() {
+  const r = await api('/api/admin/settings');
+  if (!r.ok) return;
+  document.getElementById('admServiceEnabled').value = r.data.service_enabled || '1';
+  document.getElementById('admPerCheckCost').value = r.data.per_check_cost || '1';
+  document.getElementById('admMaintMsg').value = r.data.maintenance_msg || '';
+}
+async function adminSaveSettings() {
+  const err = document.getElementById('admSvcErr');
+  const msg = document.getElementById('admSvcMsg');
+  err.style.display='none'; msg.style.display='none';
+  const body = {
+    service_enabled: document.getElementById('admServiceEnabled').value,
+    per_check_cost: document.getElementById('admPerCheckCost').value,
+    maintenance_msg: document.getElementById('admMaintMsg').value
+  };
+  const r = await api('/api/admin/settings', { method:'POST', body:JSON.stringify(body) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.textContent='Settings saved'; msg.style.display='block';
+}
+async function loadAdminPrices() {
+  const r = await api('/api/admin/prices');
+  if (!r.ok) return;
+  document.getElementById('adminPricesTable').innerHTML = r.data.prices.map(p =>
+    '<tr><td>'+p.name+'</td><td>'+p.cost+'</td><td>'+p.currency+'</td>' +
+    '<td><button class="btn btn-sm btn-blue" onclick="document.getElementById(\'admPriceName\').value=\''+p.name+'\';document.getElementById(\'admPriceCost\').value='+p.cost+';document.getElementById(\'admPriceCurrency\').value=\''+p.currency+'\'">Edit</button></td></tr>'
+  ).join('');
+}
+async function adminSavePrice() {
+  const name = document.getElementById('admPriceName').value;
+  const cost = parseInt(document.getElementById('admPriceCost').value);
+  const currency = document.getElementById('admPriceCurrency').value;
+  const err = document.getElementById('admPriceErr');
+  const msg = document.getElementById('admPriceMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!name || !cost) { err.textContent='Name and cost required'; err.style.display='block'; return; }
+  const r = await api('/api/admin/prices', { method:'POST', body:JSON.stringify({name,cost,currency}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.textContent='Price saved'; msg.style.display='block';
+  loadAdminPrices();
+}
+async function loadAdminCurrencies() {
+  const r = await api('/api/admin/currencies');
+  if (!r.ok) return;
+  document.getElementById('adminCurrenciesTable').innerHTML = r.data.currencies.map(c =>
+    '<tr><td><strong>'+c.code+'</strong></td><td>'+c.name+'</td><td>'+c.symbol+'</td><td>'+c.rate+'</td>' +
+    '<td><button class="btn btn-sm btn-blue" onclick="document.getElementById(\'admCurCode\').value=\''+c.code+'\';document.getElementById(\'admCurName\').value=\''+c.name+'\';document.getElementById(\'admCurSymbol\').value=\''+c.symbol+'\';document.getElementById(\'admCurRate\').value='+c.rate+'">Edit</button></td></tr>'
+  ).join('');
+}
+async function adminSaveCurrency() {
+  const code = document.getElementById('admCurCode').value.toUpperCase();
+  const name = document.getElementById('admCurName').value;
+  const symbol = document.getElementById('admCurSymbol').value || '$';
+  const rate = parseFloat(document.getElementById('admCurRate').value) || 1.0;
+  const err = document.getElementById('admCurErr');
+  const msg = document.getElementById('admCurMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!code || !name) { err.textContent='Code and name required'; err.style.display='block'; return; }
+  const r = await api('/api/admin/currencies', { method:'POST', body:JSON.stringify({code,name,symbol,rate}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.textContent='Currency saved'; msg.style.display='block';
+  loadAdminCurrencies();
+}
+
+async function adminApprove(id) { await api('/api/admin/users/'+id+'/approve', {method:'POST'}); loadAdmin(); }
+async function adminDisable(id) { await api('/api/admin/users/'+id+'/suspend', {method:'POST'}); loadAdmin(); }
+async function adminAddCredits(id) {
+  const amt = parseInt(document.getElementById('addAmt-'+id).value);
+  if (!amt || amt<1) return;
+  await api('/api/admin/users/'+id+'/credits', {method:'POST', body:JSON.stringify({amount:amt, note:'Admin added'})});
+  loadAdmin();
+}
+async function adminDeductCredits(id) {
+  const amt = parseInt(document.getElementById('dedAmt-'+id).value);
+  if (!amt || amt<1) return;
+  const r = await api('/api/admin/users/'+id+'/credits/deduct', {method:'POST', body:JSON.stringify({amount:amt, note:'Admin deducted'})});
+  if (r.data.error) return showToast(r.data.error, 'error');
+  loadAdmin();
+}
+async function adminViewHist(id, name) {
+  const r = await api('/api/admin/users/'+id+'/history');
+  if (!r.ok) return;
+  document.getElementById('userHistSummary').innerHTML =
+    '<span><strong>' + name + '</strong></span> <span>Checks: <strong>' + r.data.totalChecks + '</strong></span> <span>Credits used: <strong>' + r.data.totalCreditsUsed + '</strong></span>';
+  document.getElementById('userHistTable').innerHTML = r.data.checks.map((c,i) =>
+    '<tr><td>'+(i+1)+'</td><td>'+c.imei+'</td><td class="'+(c.response_status===200?'s-active':'s-inactive')+'">'+(c.response_status===200?'Success':'Failed')+'</td><td>'+c.created_at+'</td></tr>'
+  ).join('');
+  document.getElementById('userHistModal').classList.add('show');
+}
+function closeUserHist() { document.getElementById('userHistModal').classList.remove('show'); }
+document.getElementById('userHistModal').addEventListener('click', e => { if (e.target===e.currentTarget) closeUserHist(); });
+
+async function adminSeedData() {
+  const err = document.getElementById('admSeedErr');
+  const msg = document.getElementById('admSeedMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!confirm('This will delete all existing orders/services and recreate demo data. Continue?')) return;
+  const r = await api('/api/admin/seed', { method:'POST' });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.textContent=r.data.message; msg.style.display='block';
+  showToast('Demo data seeded!', 'success');
+  loadAdmin();
+}
+
+async function adminCreateUser() {
+  const name = document.getElementById('adminNewName').value;
+  const email = document.getElementById('adminNewEmail').value;
+  const pass = document.getElementById('adminNewPass').value;
+  const err = document.getElementById('adminCreateErr');
+  const msg = document.getElementById('adminCreateMsg');
+  err.style.display='none'; msg.style.display='none';
+  const r = await api('/api/admin/users/create', { method:'POST', body:JSON.stringify({name,email,password:pass}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.textContent=r.data.message; msg.style.display='block';
+  document.getElementById('adminNewName').value=''; document.getElementById('adminNewEmail').value=''; document.getElementById('adminNewPass').value='';
+  loadAdmin();
+}
+
+async function loadAdminLogs() {
+  const r = await api('/api/admin/logs');
+  if (!r.ok) return;
+  document.getElementById('adminLogsTable').innerHTML = r.data.logs.map(l =>
+    '<tr><td>'+(l.user_name||'API')+'</td><td>'+l.imei+'</td><td class="'+(l.response_status===200?'s-active':'s-inactive')+'">'+(l.response_status===200?'Success':'Failed ('+l.response_status+')')+'</td><td>'+l.created_at+'</td></tr>'
+  ).join('');
+}
+async function loadAdminCreditLogs() {
+  const r = await api('/api/admin/credit-logs');
+  if (!r.ok) return;
+  document.getElementById('adminCreditLogsTable').innerHTML = r.data.logs.map(l =>
+    '<tr><td>'+(l.user_name||'?')+'</td><td style="color:'+(l.amount>0?'var(--green)':'var(--red)')+';font-weight:600">'+(l.amount>0?'+':'')+l.amount+'</td><td>'+l.type+'</td><td>'+(l.note||'')+'</td><td>'+l.created_at+'</td></tr>'
+  ).join('');
+}
+
+/* ===== ORDERS (CLIENT) ===== */
+
+let selectedServiceId = null;
+let orderFieldsData = [];
+
+function showNewOrderForm() {
+  document.getElementById('orderListView').style.display = 'none';
+  document.getElementById('newOrderView').style.display = 'block';
+  document.getElementById('orderDetailView').style.display = 'none';
+  selectedServiceId = null;
+  document.getElementById('orderServiceSelect').style.display = 'block';
+  document.getElementById('orderFormCard').style.display = 'none';
+  loadOrderServices();
+}
+
+function showOrderList() {
+  document.getElementById('orderListView').style.display = 'block';
+  document.getElementById('newOrderView').style.display = 'none';
+  document.getElementById('orderDetailView').style.display = 'none';
+  loadOrders();
+}
+
+function showOrderDetail(id) {
+  document.getElementById('orderListView').style.display = 'none';
+  document.getElementById('newOrderView').style.display = 'none';
+  document.getElementById('orderDetailView').style.display = 'block';
+  document.getElementById('orderDetailTitle').textContent = 'Order #' + id;
+  loadOrderDetail(id);
+}
+
+async function loadOrders() {
+  const r = await api('/api/orders');
+  if (!r.ok) return;
+  document.getElementById('ordersTable').innerHTML = r.data.orders.map(o =>
+    '<tr style="cursor:pointer" onclick="showOrderDetail('+o.id+')">' +
+    '<td>'+o.id+'</td><td>'+o.service_name+'</td>' +
+    '<td class="s-'+(o.status==='pending'?'pending':o.status==='processing'?'processing':o.status==='completed'?'active':'inactive')+'" style="font-weight:600">' +
+      (o.status==='pending'?'Pending':o.status==='processing'?'Processing':o.status==='completed'?'Completed':'Rejected') +
+    '</td><td style="font-size:.78rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(o.admin_reply||'-')+'</td>' +
+    '<td style="font-size:.75rem">'+o.created_at+'</td></tr>'
+  ).join('');
+}
+
+async function loadOrderDetail(id) {
+  const r = await api('/api/orders/'+id);
+  if (!r.ok) { document.getElementById('orderDetailContent').innerHTML = '<p style="color:var(--red)">Order not found</p>'; return; }
+  const o = r.data.order;
+  const fields = r.data.data || [];
+  let html = '<div style="line-height:2;font-size:.85rem">';
+  html += '<span class="lbl">Service</span><br><strong>'+o.service_name+'</strong><br>';
+  html += '<span class="lbl">Status</span><br><strong class="s-'+(o.status==='pending'?'pending':o.status==='processing'?'processing':o.status==='completed'?'active':'inactive')+'">'+
+    (o.status==='pending'?'Pending':o.status==='processing'?'Processing':o.status==='completed'?'Completed':'Rejected')+'</strong><br>';
+  html += '<span class="lbl">Submitted</span><br>'+o.created_at+'<br>';
+  if (o.updated_at && o.updated_at !== o.created_at) {
+    html += '<span class="lbl">Last Updated</span><br>'+o.updated_at+'<br>';
+  }
+  if (o.admin_reply) {
+    html += '<span class="lbl">Admin Reply</span><br><div style="background:var(--bg);padding:.5rem;border-radius:6px;margin:.25rem 0">'+o.admin_reply+'</div>';
+  }
+  if (o.unlock_code) {
+    html += '<span class="lbl">Unlock Code</span><br><strong style="color:var(--green)">'+o.unlock_code+'</strong><br>';
+  }
+  html += '<hr style="border-color:var(--border);margin:.75rem 0"><span class="lbl">Submitted Data</span><br>';
+  fields.forEach(f => {
+    const isImg = f.field_type === 'file' && f.value && f.value.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i);
+    html += '<div style="margin:.35rem 0"><span style="color:var(--text2);font-size:.78rem">'+f.label+':</span><br>';
+    if (isImg) {
+      html += '<img src="'+f.value+'" style="max-width:200px;max-height:200px;border-radius:6px;margin-top:4px" loading="lazy">';
+    } else {
+      html += '<strong>'+f.value+'</strong>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('orderDetailContent').innerHTML = html;
+}
+
+async function loadOrderServices() {
+  const r = await api('/api/orders/services');
+  if (!r.ok) return;
+  const list = document.getElementById('orderServiceList');
+  list.innerHTML = r.data.services.map(s =>
+    '<div class="card glassmorphic" style="cursor:pointer;padding:.75rem;margin-bottom:.5rem" onclick="selectService('+s.id+')">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center"><strong>'+s.name+'</strong><span class="cost-badge">'+s.cost+' credits</span></div>' +
+    '<span style="font-size:.78rem;color:var(--text2)">'+(s.description||'')+'</span></div>'
+  ).join('');
+}
+
+async function selectService(serviceId) {
+  selectedServiceId = serviceId;
+  const r = await api('/api/orders/services/'+serviceId+'/fields');
+  if (!r.ok) return;
+  document.getElementById('orderServiceSelect').style.display = 'none';
+  document.getElementById('orderFormCard').style.display = 'block';
+  document.getElementById('orderFormTitle').textContent = 'New Order: ' + r.data.service.name + ' ('+r.data.service.cost+' credits)';
+  const fields = r.data.fields || [];
+  orderFieldsData = fields;
+  let html = '';
+  fields.forEach(f => {
+    html += '<div class="form-group"><label>' + f.label + (f.required?' <span style="color:var(--red)">*</span>':'') + '</label>';
+    if (f.field_type === 'textarea') {
+      html += '<textarea id="of_'+f.id+'" rows="3" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px"></textarea>';
+    } else if (f.field_type === 'file') {
+      html += '<input type="file" id="of_'+f.id+'" style="width:100%;padding:.5rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px">';
+    } else {
+      html += '<input type="text" id="of_'+f.id+'" placeholder="'+f.label+'" style="width:100%;padding:.6rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:16px">';
+    }
+    html += '</div>';
+  });
+  document.getElementById('orderFormFields').innerHTML = html;
+}
+
+async function submitOrder() {
+  const err = document.getElementById('orderSubmitErr');
+  err.style.display = 'none';
+  if (!selectedServiceId) { err.textContent='No service selected'; err.style.display='block'; return; }
+  let missing = false;
+  orderFieldsData.forEach(f => {
+    const el = document.getElementById('of_'+f.id);
+    if (f.required && f.field_type !== 'file' && !el.value.trim()) { missing = true; }
+  });
+  if (missing) { err.textContent='Please fill all required fields'; err.style.display='block'; return; }
+
+  const formData = new FormData();
+  formData.append('service_id', selectedServiceId);
+  let hasFiles = false;
+  orderFieldsData.forEach(f => {
+    const el = document.getElementById('of_'+f.id);
+    if (f.field_type === 'file') {
+      if (el.files && el.files[0]) {
+        formData.append('file_'+f.id, el.files[0]);
+        hasFiles = true;
+      } else if (f.required) {
+        missing = true;
+      }
+    } else {
+      formData.append('field_'+f.id, el.value.trim());
+    }
+  });
+  if (missing) { err.textContent='Please fill all required fields'; err.style.display='block'; return; }
+
+  const r = await apiUpload('/api/orders', formData);
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  showToast('Order submitted successfully! Order #' + r.data.order_id, 'success');
+  showOrderList();
+}
+
+async function apiUpload(url, formData) {
+  const headers = {};
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  try {
+    const res = await fetch(url, { method: 'POST', headers, body: formData });
+    const data = await res.json();
+    return { ok: res.ok, status: res.status, data };
+  } catch(e) {
+    return { ok: false, status: 0, data: { error: 'Connection error' } };
+  }
+}
+
+/* ===== ADMIN SERVICES ===== */
+
+let editingSvcId = null;
+let svcFieldList = [];
+
+async function loadAdminServices() {
+  const r = await api('/api/admin/services');
+  if (!r.ok) return;
+  document.getElementById('adminServicesTable').innerHTML = r.data.services.map(s =>
+    '<tr><td>'+s.id+'</td><td>'+s.name+'</td><td style="font-size:.78rem">'+(s.description||'')+'</td>' +
+    '<td>'+(s.cost||'0')+'</td>' +
+    '<td class="'+(s.active?'s-active':'s-inactive')+'">'+(s.active?'Yes':'No')+'</td>' +
+    '<td><button class="btn btn-sm btn-outline" onclick="adminEditFields('+s.id+',\''+s.name.replace(/'/g,"\\'")+'\')">Fields</button></td>' +
+    '<td><button class="btn btn-sm btn-blue" onclick="adminEditService('+s.id+',\''+s.name.replace(/'/g,"\\'")+'\',\''+(s.description||'').replace(/'/g,"\\'")+'\','+s.active+','+(s.cost||0)+')">Edit</button></td></tr>'
+  ).join('');
+}
+
+function adminEditService(id, name, desc, active, cost) {
+  editingSvcId = id;
+  document.getElementById('svcFormTitle').textContent = 'Edit Service #' + id;
+  document.getElementById('admSvcName').value = name;
+  document.getElementById('admSvcDesc').value = desc;
+  document.getElementById('admSvcActive').value = active ? '1' : '0';
+  document.getElementById('admSvcCost').value = cost || 0;
+}
+
+async function adminSaveService() {
+  const name = document.getElementById('admSvcName').value;
+  const description = document.getElementById('admSvcDesc').value;
+  const active = parseInt(document.getElementById('admSvcActive').value);
+  const cost = parseInt(document.getElementById('admSvcCost').value) || 0;
+  const err = document.getElementById('admSvcErr');
+  const msg = document.getElementById('admSvcMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!name) { err.textContent='Name required'; err.style.display='block'; return; }
+  const r = await api('/api/admin/services', { method:'POST', body:JSON.stringify({name,description,active,cost}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  msg.textContent='Service saved'; msg.style.display='block';
+  document.getElementById('admSvcName').value=''; document.getElementById('admSvcDesc').value=''; document.getElementById('admSvcCost').value='0';
+  editingSvcId = null;
+  document.getElementById('svcFormTitle').textContent = 'Add New Service';
+  loadAdminServices();
+}
+
+async function adminEditFields(id, name) {
+  window._editSvcId = id;
+  document.getElementById('svcFieldsName').textContent = name;
+  document.getElementById('fieldsModal').classList.add('show');
+  document.getElementById('svcFieldErr').style.display='none';
+  document.getElementById('svcFieldMsg').style.display='none';
+  const r = await api('/api/orders/services/'+id+'/fields');
+  svcFieldList = (r.ok && r.data.fields) ? r.data.fields.map(f => ({ id: f.id, label: f.label, field_type: f.field_type, required: f.required })) : [];
+  renderSvcFields();
+}
+function closeFieldsModal() { document.getElementById('fieldsModal').classList.remove('show'); }
+document.getElementById('fieldsModal').addEventListener('click', e => { if (e.target===e.currentTarget) closeFieldsModal(); });
+
+let fieldIdCounter = 0;
+function adminAddField() {
+  const label = document.getElementById('newFieldLabel').value.trim();
+  if (!label) return;
+  svcFieldList.push({ id: 'new_' + (fieldIdCounter++), label, field_type: document.getElementById('newFieldType').value, required: parseInt(document.getElementById('newFieldRequired').value), _new: true });
+  document.getElementById('newFieldLabel').value = '';
+  renderSvcFields();
+}
+
+function adminRemoveField(idx) {
+  svcFieldList.splice(idx, 1);
+  renderSvcFields();
+}
+
+function renderSvcFields() {
+  document.getElementById('svcFieldsTable').innerHTML = svcFieldList.map((f, i) =>
+    '<tr><td><input type="text" value="'+f.label.replace(/'/g,"&#39;")+'" onchange="svcFieldList['+i+'].label=this.value" style="width:100%;padding:.3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-size:.8rem"></td>' +
+    '<td><select onchange="svcFieldList['+i+'].field_type=this.value" style="padding:.3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-size:.8rem">' +
+      '<option value="text"'+(f.field_type==='text'?' selected':'')+'>Text</option>' +
+      '<option value="textarea"'+(f.field_type==='textarea'?' selected':'')+'>Textarea</option>' +
+      '<option value="file"'+(f.field_type==='file'?' selected':'')+'>File/Image</option>' +
+    '</select></td>' +
+    '<td><select onchange="svcFieldList['+i+'].required=parseInt(this.value)" style="padding:.3rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);font-size:.8rem">' +
+      '<option value="1"'+(f.required?' selected':'')+'>Yes</option><option value="0"'+(f.required?'':' selected')+'>No</option>' +
+    '</select></td>' +
+    '<td><button class="btn btn-sm btn-red" onclick="adminRemoveField('+i+')">&times;</button></td></tr>'
+  ).join('');
+}
+
+async function adminSaveFields() {
+  const err = document.getElementById('svcFieldErr');
+  const msg = document.getElementById('svcFieldMsg');
+  err.style.display='none'; msg.style.display='none';
+  if (!window._editSvcId) { err.textContent='No service selected'; err.style.display='block'; return; }
+  const r = await api('/api/admin/services/'+window._editSvcId+'/fields', { method:'POST', body:JSON.stringify({fields: svcFieldList}) });
+  if (!r.ok) { err.textContent=r.data.error; err.style.display='block'; return; }
+  closeFieldsModal();
+  showToast('Fields saved', 'success');
+  loadAdminServices();
+}
+
+/* ===== ADMIN ORDERS ===== */
+
+let adminOrderPage = 1;
+let selectedOrderIds = new Set();
+
+async function loadAdminOrders() {
+  const status = document.getElementById('admOrderStatusFilter').value;
+  const user_id = document.getElementById('admOrderUserFilter').value;
+  const service_id = document.getElementById('admOrderServiceFilter').value;
+  let url = '/api/admin/orders?page=' + adminOrderPage;
+  if (status) url += '&status=' + status;
+  if (user_id) url += '&user_id=' + user_id;
+  if (service_id) url += '&service_id=' + service_id;
+  const r = await api(url);
+  if (!r.ok) return;
+  selectedOrderIds = new Set();
+  document.getElementById('admOrderSelectAll').checked = false;
+  document.getElementById('bulkReplyBtn').style.display = 'none';
+  document.getElementById('adminOrdersTable').innerHTML = r.data.orders.map(o =>
+    '<tr>' +
+    '<td><input type="checkbox" class="order-checkbox" value="'+o.id+'" onchange="toggleOrderSelect(this)"></td>' +
+    '<td>'+o.id+'</td><td>'+o.user_name+'<br><span style="font-size:.7rem;color:var(--text2)">'+o.user_email+'</span></td>' +
+    '<td>'+o.service_name+'</td>' +
+    '<td class="s-'+(o.status==='pending'?'pending':o.status==='processing'?'processing':o.status==='completed'?'active':'inactive')+'" style="font-weight:600">'+
+      (o.status==='pending'?'Pending':o.status==='processing'?'Processing':o.status==='completed'?'Completed':'Rejected')+'</td>' +
+    '<td style="font-size:.78rem">'+(o.unlock_code||'-')+'</td>' +
+    '<td style="font-size:.78rem;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(o.admin_reply||'-')+'</td>' +
+    '<td style="font-size:.72rem">'+o.created_at+'</td>' +
+    '<td style="font-size:.72rem;white-space:nowrap">' +
+      (o.status==='pending' ? '<button class="btn btn-sm btn-green" onclick="adminAcceptOrder('+o.id+')">Accept</button> <button class="btn btn-sm btn-red" onclick="adminShowReject('+o.id+')">Reject</button> ' : '') +
+      (o.status==='processing' ? '<button class="btn btn-sm btn-blue" onclick="adminShowComplete('+o.id+')">Complete</button> ' : '') +
+      (o.status==='pending'||o.status==='processing' ? '<button class="btn btn-sm btn-outline" onclick="adminShowReply('+o.id+')">Reply</button>' : '') +
+      '<button class="btn btn-sm btn-outline" onclick="adminViewOrderDetail('+o.id+')" style="margin-left:2px">View</button>' +
+    '</td></tr>'
+  ).join('');
+  const totalPages = Math.ceil(r.data.total / 50);
+  let pg = '<button onclick="adminOrderPage='+(adminOrderPage-1)+';loadAdminOrders()"'+(adminOrderPage<=1?' disabled':'')+'>&#9664;</button>';
+  pg += '<span style="font-size:.8rem;color:var(--text2);padding:0 .5rem">' + adminOrderPage + '/' + totalPages + '</span>';
+  pg += '<button onclick="adminOrderPage='+(adminOrderPage+1)+';loadAdminOrders()"'+(adminOrderPage>=totalPages?' disabled':'')+'>&#9654;</button>';
+  document.getElementById('adminOrdersPagination').innerHTML = pg;
+}
+
+function toggleOrderSelect(el) {
+  if (el.checked) selectedOrderIds.add(parseInt(el.value));
+  else selectedOrderIds.delete(parseInt(el.value));
+  document.getElementById('bulkReplyBtn').style.display = selectedOrderIds.size > 0 ? 'inline-block' : 'none';
+}
+
+function toggleAllOrders() {
+  const checked = document.getElementById('admOrderSelectAll').checked;
+  document.querySelectorAll('.order-checkbox').forEach(el => { el.checked = checked; if (checked) selectedOrderIds.add(parseInt(el.value)); else selectedOrderIds.delete(parseInt(el.value)); });
+  document.getElementById('bulkReplyBtn').style.display = selectedOrderIds.size > 0 ? 'inline-block' : 'none';
+}
+
+async function adminAcceptOrder(id) {
+  await api('/api/admin/orders/'+id+'/accept', { method:'POST' });
+  loadAdminOrders();
+}
+
+function adminShowReject(id) {
+  const note = prompt('Rejection reason:');
+  if (note === null) return;
+  api('/api/admin/orders/'+id+'/reject', { method:'POST', body:JSON.stringify({admin_reply:note||'Rejected'}) }).then(() => loadAdminOrders());
+}
+
+function adminShowReply(id) {
+  const note = prompt('Reply note:');
+  if (note === null) return;
+  api('/api/admin/orders/'+id+'/reply', { method:'POST', body:JSON.stringify({admin_reply:note||''}) }).then(() => loadAdminOrders());
+}
+
+function adminShowComplete(id) {
+  const code = prompt('Unlock code:');
+  if (code === null) return;
+  const note = prompt('Reply note (optional):');
+  api('/api/admin/orders/'+id+'/complete', { method:'POST', body:JSON.stringify({unlock_code:code||'', admin_reply:note||''}) }).then(() => loadAdminOrders());
+}
+
+function adminBulkReply() {
+  if (selectedOrderIds.size === 0) return;
+  document.getElementById('bulkReplyInput').style.display = 'block';
+}
+
+async function adminBulkReplySend() {
+  const note = document.getElementById('bulkReplyNote').value;
+  const ids = Array.from(selectedOrderIds);
+  const r = await api('/api/admin/orders/bulk-reply', { method:'POST', body:JSON.stringify({ids, admin_reply:note}) });
+  if (r.ok) {
+    document.getElementById('bulkReplyInput').style.display = 'none';
+    document.getElementById('bulkReplyNote').value = '';
+    loadAdminOrders();
+  }
+}
+
+async function adminViewOrderDetail(id) {
+  const r = await api('/api/admin/orders/'+id);
+  if (!r.ok) return;
+  const o = r.data.order;
+  const fields = r.data.data || [];
+  document.getElementById('adminOrderModalTitle').textContent = 'Order #' + o.id + ' — ' + o.service_name + ' (' + o.user_name + ')';
+  let html = '<div style="line-height:2;font-size:.85rem">';
+  html += '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem">';
+  html += '<span><span class="lbl">Status:</span> <strong class="s-'+(o.status==='pending'?'pending':o.status==='processing'?'processing':o.status==='completed'?'active':'inactive')+'">'+
+    (o.status==='pending'?'Pending':o.status==='processing'?'Processing':o.status==='completed'?'Completed':'Rejected')+'</strong></span>';
+  html += '<span><span class="lbl">User:</span> <strong>'+o.user_name+'</strong> ('+o.user_email+')</span>';
+  html += '<span><span class="lbl">Service:</span> <strong>'+o.service_name+'</strong> (cost: '+o.service_cost+')</span>';
+  html += '<span><span class="lbl">Submitted:</span> '+o.created_at+'</span>';
+  if (o.updated_at && o.updated_at !== o.created_at) html += '<span><span class="lbl">Updated:</span> '+o.updated_at+'</span>';
+  html += '</div>';
+  if (o.admin_reply) {
+    html += '<div class="lbl">Admin Reply:</div><div style="background:var(--bg);padding:.5rem;border-radius:6px;margin-bottom:.5rem">'+o.admin_reply+'</div>';
+  }
+  if (o.unlock_code) {
+    html += '<div class="lbl">Unlock Code:</div><div style="background:var(--bg3);padding:.5rem;border-radius:6px;margin-bottom:.5rem;font-weight:600;color:var(--green)">'+o.unlock_code+'</div>';
+  }
+  html += '<hr style="border-color:var(--border);margin:.75rem 0"><div class="lbl" style="margin-bottom:.5rem">Submitted Data:</div>';
+  fields.forEach(f => {
+    const label = f.label || 'Field #'+f.id;
+    const isImg = f.field_type === 'file' && f.value && f.value.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i);
+    html += '<div style="margin:.35rem 0;padding:.35rem;background:var(--bg);border-radius:6px">';
+    html += '<span style="color:var(--text2);font-size:.78rem">'+label+':</span><br>';
+    if (isImg) {
+      html += '<img src="'+f.value+'" style="max-width:250px;max-height:250px;border-radius:6px;margin-top:4px" loading="lazy">';
+    } else if (f.value) {
+      html += '<strong>'+f.value+'</strong>';
+    } else {
+      html += '<span style="color:var(--text2);font-size:.75rem">(no data)</span>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('adminOrderModalBody').innerHTML = html;
+  document.getElementById('adminOrderModal').classList.add('show');
+}
+function closeAdminOrderModal() { document.getElementById('adminOrderModal').classList.remove('show'); }
+document.getElementById('adminOrderModal').addEventListener('click', e => { if (e.target===e.currentTarget) closeAdminOrderModal(); });
+
+window.addEventListener('hashchange', () => {
+  const page = window.location.hash.replace('#','') || 'home';
+  if (document.getElementById('page-' + page)) navigate(page);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('loginView').style.display !== 'none') {
+      if (document.getElementById('loginForm').style.display !== 'none') doLogin();
+      else doRegister();
+    }
+  }
+});
+
+if (token) {
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('appView').style.display = 'block';
+  loadApp();
+}
+
+async function loadRcsmTokenStatus() {
+  const r = await api('/api/imei/rcsm-token-status');
+  const dot = document.getElementById('rcsmDot');
+  const text = document.getElementById('rcsmStatusText');
+  const details = document.getElementById('rcsmDetails');
+  const err = document.getElementById('rcsmErr');
+  err.style.display = 'none';
+  if (!r.ok) { text.textContent = 'Error loading status'; dot.style.background = 'var(--red)'; return; }
+  const d = r.data;
+  if (d.valid) {
+    dot.style.background = 'var(--green)';
+    text.textContent = 'Token Active';
+    details.style.display = 'block';
+    document.getElementById('rcsmExpires').textContent = d.expiresAt;
+    document.getElementById('rcsmMinutes').textContent = d.minutesLeft + ' minutes remaining';
+    document.getElementById('rcsmSaved').textContent = d.savedAt;
+  } else {
+    dot.style.background = 'var(--red)';
+    text.textContent = d.message || 'Token Invalid';
+    details.style.display = 'none';
+  }
+}
+
+async function refreshRcsmToken() {
+  const err = document.getElementById('rcsmErr');
+  const msg = document.getElementById('rcsmMsg');
+  err.style.display = 'none'; msg.style.display = 'none';
+  const r = await api('/api/imei/rcsm-token-refresh', { method: 'POST' });
+  if (!r.ok) { err.textContent = r.data.error || 'Refresh failed'; err.style.display = 'block'; return; }
+  msg.textContent = 'Token refreshed! Expires: ' + r.data.expiresAt; msg.style.display = 'block';
+  loadRcsmTokenStatus();
+}
+
+async function saveRcsmTokenManual() {
+  const token = document.getElementById('rcsmManualToken').value.trim();
+  const expiresIn = parseInt(document.getElementById('rcsmExpiresIn').value) || 7200;
+  const err = document.getElementById('rcsmSaveErr');
+  const msg = document.getElementById('rcsmSaveMsg');
+  err.style.display = 'none'; msg.style.display = 'none';
+  if (!token) { err.textContent = 'Token is required'; err.style.display = 'block'; return; }
+  const r = await api('/api/imei/rcsm-token', { method: 'POST', body: JSON.stringify({ accessToken: token, expiresIn }) });
+  if (!r.ok) { err.textContent = r.data.error || 'Save failed'; err.style.display = 'block'; return; }
+  msg.textContent = 'Token saved! Expires: ' + r.data.expiresAt; msg.style.display = 'block';
+  document.getElementById('rcsmManualToken').value = '';
+  loadRcsmTokenStatus();
+}
+
+function copyRcsmSnippet() {
+  const snippet = document.getElementById('rcsmSnippet').textContent;
+  navigator.clipboard.writeText(snippet).then(() => {
+    showToast('Snippet copied!', 'success');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = snippet;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Snippet copied!', 'success');
+  });
+}
+</script>
+</body>
+</html>

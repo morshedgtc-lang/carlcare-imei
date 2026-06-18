@@ -1,0 +1,16 @@
+curl ^"https://extensions.aitopia.ai/extensions/app/get_key^" ^
+  -H ^"accept: application/json^" ^
+  -H ^"accept-language: en-US,en;q=0.9,ar;q=0.8^" ^
+  -H ^"content-type: text/plain;charset=UTF-8^" ^
+  -H ^"hopekey: 3913b5c6c74df67495e1e14706a4c5dd^" ^
+  -H ^"origin: https://www.carlcare.com^" ^
+  -H ^"priority: u=1, i^" ^
+  -H ^"referer: https://www.carlcare.com/^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"148^\^", ^\^"Brave^\^";v=^\^"148^\^", ^\^"Not/A)Brand^\^";v=^\^"99^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: cross-site^" ^
+  -H ^"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36^" ^
+  --data-raw ^"^{^\^"ai_mode^\^":^\^"local^\^",^\^"lang^\^":^\^"en^\^",^\^"model^\^":^\^"Gemini 2.5 Pro^\^",^\^"settings^\^":^{^\^"ai_key^\^":null,^\^"ai_mode^\^":^\^"local^\^",^\^"ai_model^\^":^\^"Gemini 2.5 Pro^\^",^\^"capabilities^\^":^{^\^"artifacts^\^":false,^\^"data_analysis^\^":false,^\^"image_generation^\^":false,^\^"task_progress^\^":false,^\^"think^\^":false,^\^"web_crawl^\^":false,^\^"web_search^\^":false^},^\^"chat_controls^\^":true,^\^"color_mode^\^":^\^"auto^\^",^\^"color_mode_cmd^\^":^\^"ctrl+shift+l^\^",^\^"context_menu_shortcut_cmd^\^":^\^"ctrl+j^\^",^\^"context_model^\^":^\^"AITOPIA^\^",^\^"context_reading^\^":true,^\^"context_reading_show_cmd^\^":^\^"ctrl^\^",^\^"context_writing^\^":true,^\^"context_writing_input^\^":true,^\^"email_assistant^\^":true,^\^"fullscreen_cmd^\^":^\^"ctrl+shift+f^\^",^\^"language^\^":^\^"en^\^",^\^"language_detail^\^":^{^\^"lang_code^\^":^\^"en^\^",^\^"name^\^":^\^"English^\^",^\^"title^\^":^\^"English^\^"^},^\^"language_name^\^":^\^"English^\^",^\^"search^\^":true,^\^"search_ask_mode^\^":^\^"manuel^\^",^\^"send_cmd^\^":^\^"enter^\^",^\^"sidebar_cmd^\^":^\^"ctrl+y^\^",^\^"sidebar_position^\^":^\^"right^\^",^\^"sidebar_show_icon^\^":true,^\^"sidebar_space^\^":^\^"overlay^\^",^\^"speech_send^\^":^\^"always^\^",^\^"switchbar^\^":^\^"chat^\^",^\^"voice_id^\^":null,^\^"web_access^\^":false,^\^"youtube^\^":true,^\^"youtube_summarize_mode^\^":^\^"always^\^"^},^\^"uuid_search^\^":^\^"ddTskAWMi1CbJa9OBjgBFhsz0Y-_-t_Gbf2DlBzc-_-t_z9zric-_-e_^\^",^\^"uuid_hopekey^\^":^\^"3913b5c6c74df67495e1e14706a4c5dd^\^",^\^"v^\^":^\^"6.6.0^\^",^\^"ri^\^":^\^"becfinhbfclcgokjlobojlnldbfillpf^\^",^\^"bt^\^":^\^"self^\^"^}^"

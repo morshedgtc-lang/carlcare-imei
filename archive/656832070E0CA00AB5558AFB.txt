@@ -1,0 +1,202 @@
+curl ^"https://aicc-hk.transsion.com/swai/cc-desk/websdk-api/api/v1/channel/656832070E0CA00AB5558AFB^" ^
+  -H ^"accept: */*^" ^
+  -H ^"accept-language: en-US,en;q=0.9,ar;q=0.8^" ^
+  -H ^"origin: https://www.carlcare.com^" ^
+  -H ^"priority: u=0, i^" ^
+  -H ^"referer: https://www.carlcare.com/^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"148^\^", ^\^"Brave^\^";v=^\^"148^\^", ^\^"Not/A)Brand^\^";v=^\^"99^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: cross-site^" ^
+  -H ^"user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36^"
+
+
+
+Request URL
+https://aicc-hk.transsion.com/swai/cc-desk/websdk-api/api/v1/channel/656832070E0CA00AB5558AFB
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+5.42.206.146:8081
+Referrer Policy
+strict-origin-when-cross-origin
+access-control-allow-credentials
+true
+access-control-allow-methods
+GET,POST,PUT,DELETE,PATCH,HEAD,OPTIONS,CONNECT,TRACE
+access-control-allow-origin
+https://www.carlcare.com
+access-control-expose-headers
+**
+access-control-max-age
+600
+access-control-request-private-network
+true
+content-encoding
+br
+content-type
+application/json
+date
+Mon, 25 May 2026 13:04:59 GMT
+set-cookie
+acw_tc=0a03846a17797142989852976e3a777939c6912e1d7d773654296a64e0e1b8;path=/;HttpOnly;Max-Age=1800
+vary
+Accept-Encoding
+vary
+Origin
+x-apisix-upstream-status
+200
+:authority
+aicc-hk.transsion.com
+:method
+GET
+:path
+/swai/cc-desk/websdk-api/api/v1/channel/656832070E0CA00AB5558AFB
+:scheme
+https
+accept
+*/*
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-US,en;q=0.9,ar;q=0.8
+origin
+https://www.carlcare.com
+priority
+u=0, i
+referer
+https://www.carlcare.com/
+sec-ch-ua
+"Chromium";v="148", "Brave";v="148", "Not/A)Brand";v="99"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+cross-site
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
+
+
+{
+    "data": {
+        "oid": "656832070E0CA00AB5558AFB",
+        "ctime": 1701327367028,
+        "utime": 1701327367028,
+        "owner_id": "6565566AD0B077C91940FF4C",
+        "active": true,
+        "name": "H5_OfficialWebsite_Global",
+        "config": {
+            "website": {
+                "name": "H5_OfficialWebsite_Global",
+                "title": "Carlcare Service",
+                "avatar": ""
+            },
+            "widget": {
+                "color": "#0076E0",
+                "title": "widget title",
+                "avatar": "",
+                "position": "right",
+                "title_color": "#0076E0",
+                "is_show_title": false
+            },
+            "message_type": [
+                "text"
+            ],
+            "message_style": {
+                "system_font_color": "#0076E0",
+                "customer_font_color": "#0076E0",
+                "system_background_color": "#0076E0",
+                "customer_background_color": "#0076E0"
+            },
+            "button_disable": [
+                ""
+            ]
+        },
+        "webhook": "https://aicc-hk.transsion.com/swai/cc-desk/third-party-webhook-api/webhook/website/018c1f036b22fbd9099fdafceddf05d2",
+        "weburl": "https://aicc-hk.transsion.com/swai/cc-desk/websdk-ui/index.html?token=656832070E0CA00AB5558AFB",
+        "webscript": "\n<script>\n\n(function(d, t) {\n            var BASE_URL = \"https://aicc-hk.transsion.com/swai/cc-desk/websdk-ui\";\n            var HOST = \"https://aicc-hk.transsion.com\"\n            var TOKEN = \"656832070E0CA00AB5558AFB\";\n            var g = d.createElement(t),\n                s = d.getElementsByTagName(t)[0];\n            g.src = BASE_URL + \"/js/sdk.js\";\n            g.defer = true;\n            g.async = true;\n            s.parentNode.insertBefore(g, s);\n            g.onload = function() {\n                window.addEventListener('message', function (event) {\n                        const iframe = document.getElementById('chat-form-container');\n                        const OpenContent = document.getElementById('bubble-container');\n                        if (iframe) {\n                          iframe.style.display = 'none'\n                        }\n                        if (OpenContent) {\n                          OpenContent.style.display = 'block'\n                        }\n                      });\n                window.WebsiteSdk.run({\n                    token: TOKEN,\n                    baseUrl: BASE_URL,\n                    host: HOST\n                })\n            }\n        })(document, \"script\");\n\n</script>\n\n",
+        "language_code": "all",
+        "country_code": "ALL",
+        "pre_replys": {
+            "greeting": {
+                "line1": "Hello, I'm Carlcare AIbot!",
+                "line2": "Nice to meet you!",
+                "line3": "Carlcare AIbot can answer all your questions ",
+                "line4": "about TECNO/Infinix/itel/Oraimo/Syinix. ",
+                "line5": "Now, Please tell me your questions"
+            }
+        }
+    },
+    "code": 0,
+    "error": 0,
+    "message": "Ok",
+    "timestamp": 1779714299
+}
+
+
+{data: {oid: "656832070E0CA00AB5558AFB", ctime: 1701327367028, utime: 1701327367028,…}, code: 0,…}
+code
+: 
+0
+data
+: 
+{oid: "656832070E0CA00AB5558AFB", ctime: 1701327367028, utime: 1701327367028,…}
+active
+: 
+true
+config
+: 
+{website: {name: "H5_OfficialWebsite_Global", title: "Carlcare Service", avatar: ""},…}
+country_code
+: 
+"ALL"
+ctime
+: 
+1701327367028
+language_code
+: 
+"all"
+name
+: 
+"H5_OfficialWebsite_Global"
+oid
+: 
+"656832070E0CA00AB5558AFB"
+owner_id
+: 
+"6565566AD0B077C91940FF4C"
+pre_replys
+: 
+{greeting: {line1: "Hello, I'm Carlcare AIbot!", line2: "Nice to meet you!",…}}
+utime
+: 
+1701327367028
+webhook
+: 
+"https://aicc-hk.transsion.com/swai/cc-desk/third-party-webhook-api/webhook/website/018c1f036b22fbd9099fdafceddf05d2"
+webscript
+: 
+"\n<script>\n\n(function(d, t) {\n            var BASE_URL = \"https://aicc-hk.transsion.com/swai/cc-desk/websdk-ui\";\n            var HOST = \"https://aicc-hk.transsion.com\"\n            var TOKEN = \"656832070E0CA00AB5558AFB\";\n            var g = d.createElement(t),\n                s = d.getElementsByTagName(t)[0];\n            g.src = BASE_URL + \"/js/sdk.js\";\n            g.defer = true;\n            g.async = true;\n            s.parentNode.insertBefore(g, s);\n            g.onload = function() {\n                window.addEventListener('message', function (event) {\n                        const iframe = document.getElementById('chat-form-container');\n                        const OpenContent = document.getElementById('bubble-container');\n                        if (iframe) {\n                          iframe.style.display = 'none'\n                        }\n                        if (OpenContent) {\n                          OpenContent.style.display = 'block'\n                        }\n                      });\n                window.WebsiteSdk.run({\n                    token: TOKEN,\n                    baseUrl: BASE_URL,\n                    host: HOST\n                })\n            }\n        })(document, \"script\");\n\n</script>\n\n"
+weburl
+: 
+"https://aicc-hk.transsion.com/swai/cc-desk/websdk-ui/index.html?token=656832070E0CA00AB5558AFB"
+error
+: 
+0
+message
+: 
+"Ok"
+timestamp
+: 
+1779714299
+
+

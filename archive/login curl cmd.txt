@@ -1,0 +1,14 @@
+curl 'https://service.carlcare.com/CarlcareClient/select-aicc-login?mcc=000' \
+  -H 'accept: application/json, text/plain, */*' \
+  -H 'accept-language: en-US,en;q=0.9,ar;q=0.8' \
+  -H 'origin: https://www.carlcare.com' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://www.carlcare.com/' \
+  -H 'sec-ch-ua: "Chromium";v="148", "Brave";v="148", "Not/A)Brand";v="99"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-site' \
+  -H 'sign: 521fef2a4d6fa2096a6899b7b54f4b9b' \
+  -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36'

@@ -1,0 +1,66 @@
+Request URL
+https://service.carlcare.com/CarlcareClient/unlock-phone/imei-info?sign=315707298564785444554992910060&timeStamp=1779548445921
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+5.42.206.146:8081
+Referrer Policy
+strict-origin-when-cross-origin
+access-control-allow-credentials
+true
+access-control-allow-methods
+GET,POST,PUT,OPTIONS,DELETE,PATCH
+access-control-allow-origin
+https://www.carlcare.com
+access-control-max-age
+3600
+content-encoding
+gzip
+content-type
+application/json
+date
+Mon, 25 May 2026 13:41:11 GMT
+response_code
+200
+vary
+Origin
+vary
+Access-Control-Request-Method
+vary
+Access-Control-Request-Headers
+:authority
+service.carlcare.com
+:method
+GET
+:path
+/CarlcareClient/unlock-phone/imei-info?sign=315707298564785444554992910060&timeStamp=1779548445921
+:scheme
+https
+accept
+application/json, text/plain, */*
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-US,en;q=0.9,ar;q=0.8
+origin
+https://www.carlcare.com
+priority
+u=1, i
+referer
+https://www.carlcare.com/
+sec-ch-ua
+"Chromium";v="148", "Brave";v="148", "Not/A)Brand";v="99"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+same-site
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36

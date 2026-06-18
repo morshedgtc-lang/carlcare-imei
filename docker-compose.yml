@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Main application
+  carlcare-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: carlcare-imei-app
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_PATH=/app/data/carlcare.db
+    volumes:
+      - ./data:/app/data
+      - ./utils:/app/utils
+      - ./routes:/app/routes
+      - ./public:/app/public
+    restart: unless-stopped
+    networks:
+      - carlcare-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - db-browser
+
+  # Database browser UI (sqlite)
+  db-browser:
+    image: coleifer/sqlite-web:latest
+    container_name: carlcare-db-browser
+    ports:
+      - "${DB_BROWSER_PORT:-8080}:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      - SQLITE_DATABASE=/data/carlcare.db
+    restart: unless-stopped
+    networks:
+      - carlcare-network
+    command: sqlite_web --host 0.0.0.0 --port 8080 --read-only /data/carlcare.db
+
+networks:
+  carlcare-network:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local

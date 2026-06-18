@@ -1,0 +1,28 @@
+{"code":200,"message":"success","desc":"","data":{"lifeCycle":"DZ","activeMessage":{"status":3,"warrantyDuration":"26-01-2027","brand":"Infinix","model":"X6532","marketName":"SMART 9","imei":["350286754549906","350286755354702","",""],"activeTime":"2026-01-26 00:00:00","country":"Nigeria","senderCountryCode":null,"countryCode":"NG","extendedWarrantyModel":null}},"timestamp":1779716471873,"requestId":"1508585751121555475"}{
+    "code": 200,
+    "message": "success",
+    "desc": "",
+    "data": {
+        "lifeCycle": "DZ",
+        "activeMessage": {
+            "status": 3,
+            "warrantyDuration": "26-01-2027",
+            "brand": "Infinix",
+            "model": "X6532",
+            "marketName": "SMART 9",
+            "imei": [
+                "350286754549906",
+                "350286755354702",
+                "",
+                ""
+            ],
+            "activeTime": "2026-01-26 00:00:00",
+            "country": "Nigeria",
+            "senderCountryCode": null,
+            "countryCode": "NG",
+            "extendedWarrantyModel": null
+        }
+    },
+    "timestamp": 1779716471873,
+    "requestId": "1508585751121555475"
+}

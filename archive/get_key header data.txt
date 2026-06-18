@@ -1,0 +1,102 @@
+Request URL
+https://extensions.aitopia.ai/extensions/app/get_key
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+5.42.206.146:8081
+Referrer Policy
+strict-origin-when-cross-origin
+access-control-allow-credentials
+true
+access-control-allow-headers
+Access-Control-Allow-Headers,Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,content-type,x-session-key,hopekey,Authorization,Accept, Range
+access-control-allow-methods
+GET, POST, PATCH, PUT, DELETE, OPTIONS
+access-control-allow-origin
+https://www.carlcare.com
+access-control-allow-private-network
+true
+cache-control
+no-store, no-cache, must-revalidate
+cf-cache-status
+DYNAMIC
+cf-ray
+a014bfbefd3dc71e-DXB
+content-encoding
+br
+content-type
+application/json; charset=UTF-8
+date
+Mon, 25 May 2026 13:04:59 GMT
+expires
+Thu, 19 Nov 1981 08:52:00 GMT
+hopekey
+3913b5c6c74df67495e1e14706a4c5dd
+nel
+{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+pragma
+no-cache
+report-to
+{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=nZgHKWgiOFmXWuxeboCeoPkVDiV1no1s48FVy31vcTo%2FnSMZxPIfGq9sqaZiAp%2FegV3UPcQ1z5aeDDtwF4xo4rUw%2FzQUh3sr9eu15hg6F4C%2FyZrYnMOSDS%2F3qn3gNoExtObac%2B2I4A%3D%3D"}]}
+server
+cloudflare
+set-cookie
+hopekey=3913b5c6c74df67495e1e14706a4c5dd; expires=Tue, 22 Sep 2026 13:04:58 GMT; Max-Age=10368000; path=/; domain=.aitopia.ai
+set-cookie
+hopekey=3913b5c6c74df67495e1e14706a4c5dd; expires=Tue, 22 Sep 2026 13:04:58 GMT; Max-Age=10368000; path=/; domain=.chatgptextension.ai
+set-cookie
+hopekey=3913b5c6c74df67495e1e14706a4c5dd; expires=Tue, 22 Sep 2026 13:04:58 GMT; Max-Age=10368000; path=/; domain=.aitopia.com
+set-cookie
+hopekey=3913b5c6c74df67495e1e14706a4c5dd; expires=Tue, 22 Sep 2026 13:04:58 GMT; Max-Age=10368000; path=/; domain=.aitopia.ai
+set-cookie
+hopekey=3913b5c6c74df67495e1e14706a4c5dd; expires=Tue, 22 Sep 2026 13:04:58 GMT; Max-Age=10368000; path=/; domain=.chatgptextension.ai
+set-cookie
+hopekey=3913b5c6c74df67495e1e14706a4c5dd; expires=Tue, 22 Sep 2026 13:04:58 GMT; Max-Age=10368000; path=/; domain=.aitopia.com
+set-cookie
+PHPSESSID=3913b5c6c74df67495e1e14706a4c5dd; expires=Sun, 14 Feb 2083 02:09:56 GMT; Max-Age=1790082298; path=/; domain=.aitopia.ai; secure; SameSite=None
+set-cookie
+__cflb=0H28vwpEEm7Rt7Qx85wwgMtf8VCvvb7QjQtXd2cSzi9; HttpOnly; SameSite=None; Secure; Path=/; Expires=Mon, 25 May 2026 13:34:59 GMT
+x-content-type-options
+nosniff
+:authority
+extensions.aitopia.ai
+:method
+POST
+:path
+/extensions/app/get_key
+:scheme
+https
+accept
+application/json
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-US,en;q=0.9,ar;q=0.8
+content-length
+1172
+content-type
+text/plain;charset=UTF-8
+hopekey
+3913b5c6c74df67495e1e14706a4c5dd
+origin
+https://www.carlcare.com
+priority
+u=1, i
+referer
+https://www.carlcare.com/
+sec-ch-ua
+"Chromium";v="148", "Brave";v="148", "Not/A)Brand";v="99"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+cross-site
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36
