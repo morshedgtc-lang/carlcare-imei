@@ -3,7 +3,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const db = require('../utils/db');
-const { SignatureGenerator, extractDeviceDetails, encryptRcsmImei, buildRcsmUrl, parseRcsmResponse, loadRcsmToken, saveRcsmToken, isRcsmTokenValid, RCSM_BASE } = require('../utils/signature');
+const { SignatureGenerator, extractDeviceDetails, encryptRcsmImei, buildRcsmUrl, parseRcsmResponse, loadRcsmToken, saveRcsmToken, clearRcsmToken, isRcsmTokenValid, RCSM_BASE } = require('../utils/signature');
 const { JWT_SECRET } = require('./auth');
 const { isIpBlocked, recordFailedAttempt, requireHmac } = require('../utils/verify');
 
@@ -308,6 +308,14 @@ router.post('/rcsm-token-refresh', requireAuth, requireHmac, async (req, res) =>
     console.error('RCSM token refresh failed:', error.message);
     res.status(500).json({ error: 'Refresh failed: ' + error.message });
   }
+});
+
+router.post('/rcsm-token-clear', requireAuth, requireHmac, (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin only' });
+  }
+  clearRcsmToken();
+  res.json({ ok: true, message: 'Token cleared' });
 });
 
 module.exports = router;

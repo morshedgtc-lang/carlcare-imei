@@ -803,6 +803,7 @@ function injectAdminUI() {
           <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
             <button class="btn btn-blue" onclick="loadRcsmTokenStatus()">Refresh Status</button>
             <button class="btn btn-green" onclick="refreshRcsmToken()">Force Refresh</button>
+            <button class="btn" style="background:var(--red);color:#fff" onclick="clearRcsmToken()">Clear Token</button>
           </div>
           <div class="err" id="rcsmErr"></div>
           <div class="msg" id="rcsmMsg"></div>
@@ -1659,6 +1660,17 @@ async function saveRcsmTokenManual() {
   if (!r.ok) { err.textContent = r.data.error || 'Save failed'; err.style.display = 'block'; return; }
   msg.textContent = 'Token saved! Expires: ' + r.data.expiresAt; msg.style.display = 'block';
   document.getElementById('rcsmManualToken').value = '';
+  loadRcsmTokenStatus();
+}
+
+async function clearRcsmToken() {
+  if (!confirm('Are you sure you want to clear the RCSM token? You will need to capture a new one.')) return;
+  const err = document.getElementById('rcsmErr');
+  const msg = document.getElementById('rcsmMsg');
+  err.style.display = 'none'; msg.style.display = 'none';
+  const r = await api('/api/imei/rcsm-token-clear', { method: 'POST' });
+  if (!r.ok) { err.textContent = r.data.error || 'Clear failed'; err.style.display = 'block'; return; }
+  msg.textContent = 'Token cleared!'; msg.style.display = 'block';
   loadRcsmTokenStatus();
 }
 

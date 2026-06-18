@@ -134,10 +134,19 @@ function saveRcsmToken(data) {
   fs.writeFileSync(tokenFile, JSON.stringify(data, null, 2));
 }
 
+function clearRcsmToken() {
+  const fs = require('fs');
+  const path = require('path');
+  const tokenFile = path.join(__dirname, '..', 'data', 'rcsm-token.json');
+  try {
+    if (fs.existsSync(tokenFile)) fs.unlinkSync(tokenFile);
+  } catch (e) {}
+}
+
 function isRcsmTokenValid() {
   const t = loadRcsmToken();
   if (!t || !t.accessToken) return false;
   return Date.now() < (t.expiresAt || 0);
 }
 
-module.exports = { SignatureGenerator, extractDeviceDetails, encryptRcsmImei, buildRcsmUrl, parseRcsmResponse, loadRcsmToken, saveRcsmToken, isRcsmTokenValid, RCSM_BASE };
+module.exports = { SignatureGenerator, extractDeviceDetails, encryptRcsmImei, buildRcsmUrl, parseRcsmResponse, loadRcsmToken, saveRcsmToken, clearRcsmToken, isRcsmTokenValid, RCSM_BASE };
