@@ -278,6 +278,19 @@ router.post('/rcsm-token', requireAuth, requireHmac, (req, res) => {
   res.json({ ok: true, expiresAt: new Date(tokenData.expiresAt).toISOString() });
 });
 
+router.post('/rcsm-token-capture', (req, res) => {
+  const { accessToken, refreshToken, expiresIn } = req.body;
+  if (!accessToken) return res.status(400).json({ ok: false, error: 'accessToken required' });
+  const tokenData = {
+    accessToken,
+    refreshToken: refreshToken || null,
+    expiresAt: Date.now() + (expiresIn || 7200) * 1000,
+    savedAt: new Date().toISOString()
+  };
+  saveRcsmToken(tokenData);
+  res.json({ ok: true, expiresAt: new Date(tokenData.expiresAt).toISOString() });
+});
+
 router.post('/rcsm-token-refresh', requireAuth, requireHmac, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Admin only' });
